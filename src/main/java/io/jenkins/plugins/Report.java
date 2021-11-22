@@ -36,7 +36,7 @@ public class Report extends ManagementLink implements RunAction2 {
 
   @Override
   public String getIconFileName() {
-    return "/plugin/zscaler-iac-scanner/images/icon.png";
+    return "/plugin/zscaler-iac-scan/images/icon.png";
   }
 
   @Override
