@@ -1,0 +1,249 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+    <script>
+        const toggleRow = (element) => {
+        element.getElementsByClassName('expanded-row-content')[0].classList.toggle('hide-row');
+        }
+    </script>
+    <style>
+        th {
+        background-color: #1b2256c7;
+        color: white;
+        }
+        td,
+        th {
+        text-align: left;
+        padding: 8px;
+        font-size: 14px;
+        }
+
+        tr {
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        justify-content: flex-start;
+        }
+
+        tr:first-child:hover {
+        cursor: default;
+        background-color: #fff;
+        }
+
+        tr:hover {
+        background-color: #EEF4FD;
+        }
+        tr:nth-child(even) {
+        background-color: #f2f2f2;
+        }
+
+        .expanded-row-content {
+        border-top: none;
+        padding-left: 30px;
+        display: grid;
+        grid-column: 1/-1;
+        justify-content: flex-start;
+        color: #AEB1B3;
+        font-size: 13px;
+        background-color: #fff;
+        }
+
+        .hide-row {
+        display: none;
+        }
+        .extradata {
+        grid-column: 2 / span 3;
+        }
+    </style>
+    <l:layout title="Zscaler IAC scan results" norefresh="true">
+        <l:side-panel>
+            <st:include page="sidepanel.jelly" it="${it.run}"/>
+        </l:side-panel>
+        <l:main-panel>
+            <div id="passed">
+                <h2>Passed</h2>
+                <table>
+                    <tr>
+                        <th>Policy Name</th>
+                        <th>Policy Id</th>
+                        <th>Resource</th>
+                        <th>Severity</th>
+                    </tr>
+                    <j:forEach var="item" items="${it.passedItems}">
+                        <tr onClick='toggleRow(this)'>
+                            <td>${item.policyName}</td>
+                            <td>${item.policyId}</td>
+                            <td>${item.resourceName}</td>
+                            <td>${item.severity}</td>
+                            <td class='expanded-row-content hide-row'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <h6>Description</h6>
+                                        </td>
+                                        <td class="extradata">${item.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>resourceType</h6>
+                                        </td>
+                                        <td class="extradata">${item.resourceType}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>File</h6>
+                                        </td>
+                                        <td class="extradata">${item.file}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Module Name</h6>
+                                        </td>
+                                        <td class="extradata">${item.moduleName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Line</h6>
+                                        </td>
+                                        <td class="extradata">${item.line}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>category</h6>
+                                        </td>
+                                        <td class="extradata">${item.category}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </j:forEach>
+                </table>
+            </div>
+            <div id="failed">
+                <h2>Failed</h2>
+                <table>
+                    <tr>
+                        <th>Policy Name</th>
+                        <th>Policy Id</th>
+                        <th>Resource</th>
+                        <th>Severity</th>
+                    </tr>
+                    <j:forEach var="item" items="${it.failedItems}">
+                        <tr onClick='toggleRow(this)'>
+                            <td>${item.policyName}</td>
+                            <td>${item.policyId}</td>
+                            <td>${item.resourceName}</td>
+                            <td>${item.severity}</td>
+                            <td class='expanded-row-content hide-row'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <h6>Description</h6>
+                                        </td>
+                                        <td class="extradata">${item.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>resourceType</h6>
+                                        </td>
+                                        <td class="extradata">${item.resourceType}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>File</h6>
+                                        </td>
+                                        <td class="extradata">${item.file}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Module Name</h6>
+                                        </td>
+                                        <td class="extradata">${item.moduleName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Line</h6>
+                                        </td>
+                                        <td class="extradata">${item.line}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>category</h6>
+                                        </td>
+                                        <td class="extradata">${item.category}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </j:forEach>
+                </table>
+            </div>
+            <div id="skipped">
+                <h2>Skipped</h2>
+                <table>
+                    <tr>
+                        <th>Policy Name</th>
+                        <th>Policy Id</th>
+                        <th>Resource</th>
+                        <th>Severity</th>
+                    </tr>
+                    <j:forEach var="item" items="${it.skippedItems}">
+                        <tr onClick='toggleRow(this)'>
+                            <td>${item.policyName}</td>
+                            <td>${item.policyId}</td>
+                            <td>${item.resourceName}</td>
+                            <td>${item.severity}</td>
+                            <td class='expanded-row-content hide-row'>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <h6>Description</h6>
+                                        </td>
+                                        <td class="extradata">${item.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>resourceType</h6>
+                                        </td>
+                                        <td class="extradata">${item.resourceType}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>File</h6>
+                                        </td>
+                                        <td class="extradata">${item.file}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Module Name</h6>
+                                        </td>
+                                        <td class="extradata">${item.moduleName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Line</h6>
+                                        </td>
+                                        <td class="extradata">${item.line}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>category</h6>
+                                        </td>
+                                        <td class="extradata">${item.category}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6>Skip comment</h6>
+                                        </td>
+                                        <td class="extradata">${item.skipComment}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </j:forEach>
+                </table>
+            </div>
+        </l:main-panel>
+    </l:layout>
+</j:jelly>

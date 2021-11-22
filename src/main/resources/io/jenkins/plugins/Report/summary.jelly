@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Load google charts
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Draw the chart and set the chart values
+        function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+        ['status', 'count', {role: 'link'}],
+        ['passed', ${it.passed}, 'zscaleriacscan#passed'],
+        ['failed', ${it.failed}, 'zscaleriacscan#failed'],
+        ['skip', ${it.skipped}, 'zscaleriacscan#skipped']
+        ]);
+
+        var options = {
+        'title': 'Zscaler IAC scan results',
+        'width': 300,
+        'height': 300,
+        'chartArea.width': 250,
+        'chartArea.height': 250,
+        'colors': ['#269e32', '#f55d5d', '#fad328']
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        google.visualization.events.addListener(chart, 'select', function (e) {
+        debugger;
+        var selection = chart.getSelection();
+        if (selection.length) {
+        var row = selection[0].row;
+        let link = data.getValue(row, 2);
+        location.href = link;
+        }
+        });
+        chart.draw(data, options);
+        }
+    </script>
+    <style>
+        .maindiv{
+        position: relative;
+        float: right;
+        text-align:center;
+        }
+    </style>
+
+    <j:set var="buildDone" value="${it.buildDone}"/>
+    <j:if test="${buildDone == true}">
+        <div>
+            <st:nbsp/>
+        </div>
+        <div class="maindiv">
+            <div id="piechart"></div>
+        </div>
+    </j:if>
+
+</j:jelly>

@@ -1,0 +1,42 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.41">
+    <actions>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction
+                plugin="pipeline-model-definition@1.9.1"/>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction
+                plugin="pipeline-model-definition@1.9.1">
+            <jobProperties/>
+            <triggers/>
+            <parameters/>
+            <options/>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+    </actions>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.93">
+        <script>pipeline {
+            agent any
+
+            stages {
+            stage(&apos;checkout code&apos;) {
+            steps {
+            git branch: &apos;main&apos;, url: &apos;https://github.com/chandar-zscaler/chandar-zscaler.git&apos;
+            }
+            }
+            stage(&apos;IAC scan&apos;) {
+            steps{
+            wrap([$class: &apos;ZscalerScan&apos;]) {
+            }
+            }
+
+            }
+            //Customer build stage
+            }
+            }
+        </script>
+        <sandbox>true</sandbox>
+    </definition>
+    <triggers/>
+    <disabled>false</disabled>
+</flow-definition>
