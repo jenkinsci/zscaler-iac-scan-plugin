@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+
+    <script type="text/javascript">
+        function CheckRegion(val) {
+        var element = document.getElementById('url');
+        if (val == 'custom')
+        element.style.display = 'block';
+        else
+        element.style.display = 'none';
+        }
+
+    </script>
+
+    <f:section title="${%Zscaler IAC plugin}">
+        <f:entry title="Choose Region" field="region">
+            <select name="region" onchange='CheckRegion(this.value);'>
+                <option value="us-prod">US-PROD</option>
+                <option value="eu-prod">EU-PROD</option>
+                <option value="gov-cloud">GOV-CLOUD</option>
+                <option value="custom">CUSTOM</option>
+            </select>
+        </f:entry>
+        <div style='display:none;' id="url">
+            <f:entry title="URL" field="url">
+                <f:textbox checkMethod="post"/>
+            </f:entry>
+        </div>
+        <f:entry title="Credential" field="credentialsId">
+            <c:select/>
+        </f:entry>
+        <f:validateButton
+                title="${%validate}" progress="${%validation in progress...}"
+                method="validate"  with="region,credentialsId,url"/>
+    </f:section>
+</j:jelly>
