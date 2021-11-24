@@ -57,7 +57,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
   }
 
   private String runScan(TaskListener listener, String workspace) throws IOException {
-    listener.getLogger().println("Running Zscaler IAC scan");
+    listener.getLogger().println("Running Zscaler IaC scan");
     String jenkinsHome = binaryLoc;
 
     ProcessBuilder processBuilder = new ProcessBuilder();
@@ -106,7 +106,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
     if (StringUtils.isBlank(resp)) {
       // if result is null then err in above try block will be populated
       listener.getLogger().println("Failed to run scan, the results are empty");
-      throw new AbortException("Zscaler IAC scan failed");
+      throw new AbortException("Zscaler IaC scan failed");
     } else {
       return resp;
     }

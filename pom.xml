@@ -30,7 +30,7 @@
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <powermock.version>2.0.9</powermock.version>
     </properties>
-    <name>Zscaler IAC Scanner</name>
+    <name>Zscaler IaC Scanner</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
     <dependencies>

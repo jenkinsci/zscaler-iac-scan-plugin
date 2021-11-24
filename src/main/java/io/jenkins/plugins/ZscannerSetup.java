@@ -43,6 +43,7 @@ public class ZscannerSetup {
   StandardUsernamePasswordCredentials credentials;
   ProxyConfiguration proxy;
 
+  // TODO need to read this from API call response
   private static final String CLI_VERSION = "v0.0.1";
 
   public ZscannerSetup(
@@ -94,7 +95,7 @@ public class ZscannerSetup {
   }
 
   private void downloadScanner() throws IOException {
-    listener.getLogger().println("Downloading Zscaler IAC scanner");
+    listener.getLogger().println("Downloading Zscaler IaC scanner");
 
     String body = "{\"version\": \"%s\",\"platform\": \"%s\",\"arch\":\"%s\"}";
 
@@ -142,7 +143,7 @@ public class ZscannerSetup {
   }
 
   private void initScanner() throws IOException {
-    listener.getLogger().println("Initialising Zscaler IAC scanner");
+    listener.getLogger().println("Initialising Zscaler IaC scanner");
     String clientId = credentials.getUsername();
     String clientSecret = credentials.getPassword().getPlainText();
 

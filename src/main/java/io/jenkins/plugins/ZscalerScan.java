@@ -74,7 +74,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
           }
           listener
               .getLogger()
-              .println("Zscaler IAC binary location set to - " + rootDir.toURI().getPath());
+              .println("Zscaler IaC binary location set to - " + rootDir.toURI().getPath());
 
           ProxyConfiguration proxy = Jenkins.get().proxy;
           StandardUsernamePasswordCredentials credentials = resolveCredentials();
@@ -200,12 +200,12 @@ public class ZscalerScan extends SimpleBuildWrapper {
           JSONObject violation = violations.optJSONObject(i);
           String severity = violation.optString("severity");
           if (severity != null && "HIGH".equals(severity.toUpperCase(Locale.ROOT))) {
-            throw new AbortException("Zscaler IAC scan found violations, they need to be fixed");
+            throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
           }
         }
       }
     } else {
-      listener.getLogger().println("Zscaler IAC scan found violations");
+      listener.getLogger().println("Zscaler IaC scan found violations");
     }
   }
 
@@ -245,7 +245,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
     @NonNull
     @Override
     public String getDisplayName() {
-      return "Zscaler IAC scan";
+      return "Zscaler IaC scan";
     }
 
     @Override

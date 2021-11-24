@@ -41,7 +41,7 @@ public class Report extends ManagementLink implements RunAction2 {
 
   @Override
   public String getDisplayName() {
-    return "Zscaler IAC scan results";
+    return "Zscaler IaC scan results";
   }
 
   @Override
