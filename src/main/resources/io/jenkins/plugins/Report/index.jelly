@@ -1,12 +1,14 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
 >
-    <l:layout permission="${app.ADMINISTER}" norefresh="true">
-        <st:include it="${app}" page="sidepanel.jelly"/>
+    <l:layout title="Zscaler IaC scan results">
+        <l:side-panel>
+            <st:include page="sidepanel.jelly" it="${it.run}"/>
+        </l:side-panel>
         <l:main-panel>
             <script>
                 function resizeIframe(obj) {
-                    obj.contentWindow.postMessage(${it.results}, 'https://iacplugin.d3543h3q90y41t.amplifyapp.com' );
+                    obj.contentWindow.postMessage(${it.results}, 'https://iacplugin.d3543h3q90y41t.amplifyapp.com');
                     let originHeight = obj.contentWindow.document.body.scrollHeight;
                     obj.style.height = (originHeight + 100) + 'px';
                     setInterval(() => {

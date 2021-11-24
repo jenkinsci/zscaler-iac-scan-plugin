@@ -24,7 +24,7 @@
             git branch: &apos;main&apos;, url: &apos;https://github.com/chandar-zscaler/chandar-zscaler.git&apos;
             }
             }
-            stage(&apos;IAC scan&apos;) {
+            stage(&apos;IaC scan&apos;) {
             steps{
             wrap([$class: &apos;ZscalerScan&apos;]) {
             }

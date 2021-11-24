@@ -13,7 +13,7 @@
 
     </script>
 
-    <f:section title="${%Zscaler IAC plugin}">
+    <f:section title="${%Zscaler IaC plugin Configuration}">
         <f:entry title="Choose Region" field="region">
             <select name="region" onchange='CheckRegion(this.value);'>
                 <option value="us-prod">US-PROD</option>
