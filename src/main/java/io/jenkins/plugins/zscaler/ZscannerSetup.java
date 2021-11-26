@@ -190,7 +190,7 @@ public class ZscannerSetup {
     ScannerConfig.AuthConfig authConfig = new ScannerConfig.AuthConfig();
     authConfig.setHost(authUrl);
     authConfig.setScope("offline_access");
-    authConfig.setAudience("https://zscaler-poc.us.auth0.com/api/v2/");
+    authConfig.setAudience("https://api.zscwp.io");
     scannerConfig.setAuthConfig(authConfig);
     scannerConfig.setHost(apiUrl);
     scannerConfig.setAuthConfig(authConfig);

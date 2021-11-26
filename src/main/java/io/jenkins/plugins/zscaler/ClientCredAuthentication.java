@@ -70,7 +70,7 @@ public class ClientCredAuthentication {
 
   private RequestBody getAuthBody() {
     return new FormBody.Builder()
-//        .add("audience", "https://iac.zscaler.com")
+        .add("audience", "https://api.zscwp.io")
         .add("grant_type", "client_credentials")
         .add("client_id", clientId)
         .add("client_secret", clientSecret)
