@@ -1,8 +1,8 @@
 package io.jenkins.plugins.zscaler.models;
 
 public enum Region {
-  US_PROD("us-prod", "http://18.216.116.191:9000", "https://authourl.com"),
-  EU_PROD("eu-prod", "http://18.216.116.191:9000", "https://authourl.com");
+  US_PROD("us-prod", "https://api.zscwp.io", "https://authourl.com"),
+  EU_PROD("eu-prod", "https://api.zscwp.io", "https://authourl.com");
 
   private final String name;
   private final String apiUrl;
