@@ -4,11 +4,11 @@
 
     <script type="text/javascript">
         function CheckRegion(val) {
-        var element = document.getElementById('url');
-        if (val == 'custom')
-        element.style.display = 'block';
-        else
-        element.style.display = 'none';
+            var element = document.getElementById('url');
+            if (val == 'custom')
+                element.style.display = 'block';
+            else
+                element.style.display = 'none';
         }
 
     </script>
@@ -23,7 +23,10 @@
             </select>
         </f:entry>
         <div style='display:none;' id="url">
-            <f:entry title="URL" field="url">
+            <f:entry title="API URL" field="apiUrl">
+                <f:textbox checkMethod="post"/>
+            </f:entry>
+            <f:entry title="Authentication URL" field="authUrl">
                 <f:textbox checkMethod="post"/>
             </f:entry>
         </div>
@@ -32,6 +35,6 @@
         </f:entry>
         <f:validateButton
                 title="${%validate}" progress="${%validation in progress...}"
-                method="validate"  with="region,credentialsId,url"/>
+                method="validate" with="region,credentialsId,apiUrl,authUrl"/>
     </f:section>
 </j:jelly>

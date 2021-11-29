@@ -1,5 +1,10 @@
 package io.jenkins.plugins.zscaler;
 
+import static com.cloudbees.plugins.credentials.CredentialsMatchers.filter;
+import static com.cloudbees.plugins.credentials.CredentialsMatchers.withId;
+import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials;
+import static org.apache.commons.lang.StringUtils.trimToEmpty;
+
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
@@ -16,6 +21,14 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.zscaler.models.CreateIntegrationResponse;
 import io.jenkins.plugins.zscaler.models.Region;
 import io.jenkins.plugins.zscaler.models.ValidateIntegrationRequest;
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
@@ -26,20 +39,6 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.filter;
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.withId;
-import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials;
-import static org.apache.commons.lang.StringUtils.trimToEmpty;
 
 @Extension
 public class Configuration extends GlobalConfiguration implements Serializable, ExtensionPoint {
@@ -55,8 +54,8 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   private String region;
   private String credentialsId;
   private String IntegrationId;
-  private String url;
-  private final String authUrl = "https://zscaler-poc.us.auth0.com";
+  private String apiUrl;
+  private String authUrl;
   private static final Map<String, Region> REGIONTOURLMAP = Maps.newHashMap();
 
   static {
@@ -88,28 +87,35 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
     save();
   }
 
-  public String getUrl() {
-    return url;
-  }
-
   @DataBoundSetter
-  public void setUrl(String url) {
-    this.url = url;
+  public void setApiUrl(String apiUrl) {
+    this.apiUrl = apiUrl;
     save();
   }
 
   public String getApiUrl() {
+    if (region == null) {
+      return null;
+    }
     if (CUSTOM_REGION.equals(region)) {
-      return url;
+      return apiUrl;
     }
     return REGIONTOURLMAP.get(region).getApiUrl();
   }
 
   public String getAuthUrl() {
+    if (region == null) {
+      return null;
+    }
     if (CUSTOM_REGION.equals(region)) {
       return authUrl;
     }
     return REGIONTOURLMAP.get(region).getAuthUrl();
+  }
+
+  @DataBoundSetter
+  public void setAuthUrl(String authUrl) {
+    this.authUrl = authUrl;
   }
 
   public String getIntegrationId() {
@@ -141,18 +147,19 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   public FormValidation doValidate(
       @QueryParameter("region") String region,
       @QueryParameter("credentialsId") String credentialsId,
-      @QueryParameter("url") String customUrl,
+      @QueryParameter("apiUrl") String customApiUrl,
+      @QueryParameter("authUrl") String authUrl,
       @AncestorInPath Job job) {
 
     Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
-    String url;
+    String apiUrl;
     if (CUSTOM_REGION.equals(region)) {
-      url = customUrl;
+      apiUrl = customApiUrl;
     } else {
-      url = REGIONTOURLMAP.get(region).getApiUrl();
+      apiUrl = REGIONTOURLMAP.get(region).getApiUrl();
     }
-    if (url == null || url.isEmpty()) {
+    if (apiUrl == null || apiUrl.isEmpty()) {
       return FormValidation.error("Invalid region");
     }
 
@@ -175,7 +182,7 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
       if (StringUtils.isNotBlank(accessToken)) {
         String rootUrl = Jenkins.get().getRootUrl();
         try {
-          validateInstallation(url, clientId, rootUrl, auth);
+          validateInstallation(apiUrl, clientId, rootUrl, auth);
         } catch (Exception e) {
           LOGGER.log(Level.SEVERE, "Validation failed due to - " + e.getMessage());
           return FormValidation.error("Validation Failed due to - " + e.getMessage());
