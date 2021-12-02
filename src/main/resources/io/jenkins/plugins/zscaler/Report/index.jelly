@@ -8,7 +8,7 @@
         <l:main-panel>
             <script>
                 function resizeIframe(obj) {
-                    obj.contentWindow.postMessage(${it.results}, 'https://iacplugin.d3543h3q90y41t.amplifyapp.com');
+                    obj.contentWindow.postMessage(${it.results}, 'https://iac.d1sjrx1molf9rx.amplifyapp.com/all-scans');
                     let originHeight = obj.contentWindow.document.body.scrollHeight;
                     obj.style.height = (originHeight + 100) + 'px';
                     setInterval(() => {
@@ -24,7 +24,7 @@
                     data-crumbtoken="${it.crumbToken}"
                     style="border: none;min-width: 800px; height: 100%"
                     id="iac-plugin-container"
-                    width="100%" src="https://iacplugin.d3543h3q90y41t.amplifyapp.com"
+                    width="100%" src="https://iac.d1sjrx1molf9rx.amplifyapp.com/all-scans"
                     onload="resizeIframe(this)"
             />
         </l:main-panel>
