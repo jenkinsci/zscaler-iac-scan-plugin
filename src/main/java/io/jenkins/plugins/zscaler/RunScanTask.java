@@ -7,12 +7,6 @@ import hudson.FilePath;
 import hudson.ProxyConfiguration;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.zscaler.models.NotificationsConfig;
-import jenkins.security.MasterToSlaveCallable;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +17,14 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashMap;
 import java.util.Map;
+import jenkins.security.MasterToSlaveCallable;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException> {
+
   TaskListener listener;
   FilePath workspace;
   Configuration configuration;
@@ -67,17 +67,17 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
     String proxyString = ClientUtils.getProxyConfigString(proxyConfiguration);
     try {
       String[] command = {
-        "./zscanner",
-        "scan",
-        "--scan-id",
-        scanId,
-        "--config-path",
-        configFile,
-        "--show-passed",
-        "-o",
-        "json",
-        "-d",
-        workspace
+          "./zscanner",
+          "scan",
+          "--scan-id",
+          scanId,
+          "--config-path",
+          configFile,
+          "--show-passed",
+          "-o",
+          "json",
+          "-d",
+          workspace
       };
       if (proxyString != null) {
         ArrayUtils.add(command, "--proxy");
@@ -125,7 +125,10 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       NotificationsConfig.WebHook webhook = new NotificationsConfig.WebHook();
       webhook.setType("webhook");
       NotificationsConfig.Config config = new NotificationsConfig.Config();
-      config.setUrl(apiUrl + "/iac/findings-processor/v1/scan/results/" + scanId);
+      if (!apiUrl.endsWith("/")) {
+        apiUrl = apiUrl + "/";
+      }
+      config.setUrl(apiUrl + "iac/findings-processor/v1/scan/results/" + scanId);
       webhook.setConfig(config);
       notifications.put("webhook", webhook);
       cliConfig.setNotifications(notifications);
