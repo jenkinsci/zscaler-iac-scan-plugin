@@ -19,6 +19,7 @@
                 <option value="us-prod">US-PROD</option>
                 <option value="eu-prod">EU-PROD</option>
                 <option value="gov-cloud">GOV-CLOUD</option>
+                <option value="preview">PREVIEW</option>
                 <option value="custom">CUSTOM</option>
             </select>
         </f:entry>
