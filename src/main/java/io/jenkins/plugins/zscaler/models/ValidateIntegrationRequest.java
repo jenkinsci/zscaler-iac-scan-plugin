@@ -6,7 +6,7 @@ public class ValidateIntegrationRequest {
   @JsonProperty("client_id")
   String clientId;
 
-  @JsonProperty("unique_identifier")
+  @JsonProperty("server_url")
   String uniqueIdentifier;
 
   public ValidateIntegrationRequest(String clientId, String uniqueIdentifier) {

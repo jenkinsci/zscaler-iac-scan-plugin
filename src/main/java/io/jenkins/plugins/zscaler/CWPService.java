@@ -11,7 +11,7 @@ import retrofit2.http.POST;
 
 public interface CWPService {
 
-  @POST("/iac/onboarding/v1/cicd/validate")
+  @POST("/iac/onboarding/v1/cicd/jenkins/validate")
   Call<CreateIntegrationResponse> validateIntegration(@Body ValidateIntegrationRequest body);
 
   @POST("/iac/onboarding/v1/cli/download")
