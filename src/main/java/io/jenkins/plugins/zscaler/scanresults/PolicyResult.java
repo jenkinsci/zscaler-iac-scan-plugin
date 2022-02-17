@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PolicyResult {
 
-  @JsonProperty("rule_name")
+  @JsonProperty("name")
   private String policyName;
 
   private String description;

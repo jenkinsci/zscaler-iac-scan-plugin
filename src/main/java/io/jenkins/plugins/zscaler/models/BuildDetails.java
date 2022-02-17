@@ -9,6 +9,8 @@ public class BuildDetails {
 
   public static final String jobType = "job_type";
 
+  public static final String scmType = "scm_ype";
+
   @JsonProperty("job_name")
   private String jobName;
 
@@ -104,5 +106,9 @@ public class BuildDetails {
       additionalDetails = new HashMap<>();
     }
     additionalDetails.put(key, value);
+  }
+
+  public Map<String, String> getAdditionalDetails() {
+    return additionalDetails;
   }
 }

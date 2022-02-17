@@ -1,0 +1,45 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <org.jenkinsci.plugins.gitbucket.GitBucketProjectProperty plugin="gitbucket@0.8">
+            <linkEnabled>false</linkEnabled>
+        </org.jenkinsci.plugins.gitbucket.GitBucketProjectProperty>
+        <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.26">
+            <gitLabConnection>GitlabTest</gitLabConnection>
+            <jobCredentialId></jobCredentialId>
+            <useAlternativeCredential>false</useAlternativeCredential>
+        </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    </properties>
+    <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.15.2">
+        <locations>
+            <hudson.scm.SubversionSCM_-ModuleLocation>
+                <remote>https://svn.example.com/repos/MyRepo/MyProject/trunk</remote>
+                <credentialsId>cacf0506-bcf2-4dee-a8f3-218a307c266b</credentialsId>
+                <depthOption>infinity</depthOption>
+                <ignoreExternalsOption>true</ignoreExternalsOption>
+                <cancelProcessOnExternalsFail>true</cancelProcessOnExternalsFail>
+            </hudson.scm.SubversionSCM_-ModuleLocation>
+        </locations>
+        <excludedRegions></excludedRegions>
+        <includedRegions></includedRegions>
+        <excludedUsers></excludedUsers>
+        <excludedRevprop></excludedRevprop>
+        <excludedCommitMessages></excludedCommitMessages>
+        <workspaceUpdater class="hudson.scm.subversion.CheckoutUpdater"/>
+        <ignoreDirPropChanges>false</ignoreDirPropChanges>
+        <filterChangelog>false</filterChangelog>
+        <quietOperation>true</quietOperation>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers/>
+    <concurrentBuild>false</concurrentBuild>
+    <builders/>
+    <publishers/>
+    <buildWrappers/>
+</project>

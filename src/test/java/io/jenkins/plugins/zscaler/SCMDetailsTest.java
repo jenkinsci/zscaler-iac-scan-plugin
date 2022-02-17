@@ -20,14 +20,14 @@ public class SCMDetailsTest {
     buildDetails.setJobName("sample");
     URL builds = Resources.getResource("builds");
 
-    Path configXmlFile = Paths.get(builds.getPath(), "freestyle.xml");
+    Path configXmlFile = Paths.get(builds.getPath(), "git_git_freestyle.xml");
     String configxml = IOUtils.toString(configXmlFile.toUri(), Charset.defaultCharset());
 
     SCMDetails.populateSCMDetails(buildDetails, configxml);
 
     Assert.assertNotNull(buildDetails.getRepoLoc());
 
-    configXmlFile = Paths.get(builds.getPath(), "pipeline.xml");
+    configXmlFile = Paths.get(builds.getPath(), "git_git_pipeline.xml");
     configxml = IOUtils.toString(configXmlFile.toUri(), Charset.defaultCharset());
 
     SCMDetails.populateSCMDetails(buildDetails, configxml);

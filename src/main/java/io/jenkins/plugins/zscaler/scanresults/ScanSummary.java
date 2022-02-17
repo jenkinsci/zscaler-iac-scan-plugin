@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ScanSummary {
 
-  @JsonProperty("file/folder")
+  @JsonProperty("target_path")
   private String fileOrFolder;
 
   @JsonProperty("iac_type")
@@ -13,7 +13,7 @@ public class ScanSummary {
   @JsonProperty("scanned_at")
   private String scannedAt;
 
-  @JsonProperty("policies_validated")
+  @JsonProperty("validated_policies")
   private int policiesValidated;
 
   @JsonProperty("violated_policies")

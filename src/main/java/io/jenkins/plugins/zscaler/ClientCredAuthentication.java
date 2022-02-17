@@ -68,6 +68,10 @@ public class ClientCredAuthentication {
     return accessToken;
   }
 
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
+
   private RequestBody getAuthBody() {
     return new FormBody.Builder()
         .add("audience", "https://api.zscwp.io/iac")

@@ -8,7 +8,6 @@ import hudson.model.*;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildWrapperDescriptor;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
-import io.jenkins.plugins.zscaler.models.ScanResponse;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.apache.commons.io.IOUtils;
@@ -17,8 +16,6 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +52,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
       throws IOException, InterruptedException {
 
     try {
-      String scanId = createScan(build, listener);
+      BuildDetails buildDetails = getBuildDetails(build, listener);
       build.addAction(new Report(build));
       if (workspace != null) {
 
@@ -90,7 +87,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
                           Configuration.get(),
                           rootDir.toURI().getPath(),
                           proxy,
-                          scanId));
+                          buildDetails));
           File buildDir = build.getParent().getBuildDir();
           postResultsToWorkspace(results, buildDir.getAbsolutePath(), build.getNumber());
           validateAndFailBuild(results, listener);
@@ -103,10 +100,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
     }
   }
 
-  private String createScan(Run build, TaskListener listener) throws IOException {
-    Retrofit client =
-        CwpClient.getClient(Configuration.get(), Jenkins.get().proxy, resolveCredentials());
-    CWPService cwpService = client.create(CWPService.class);
+  private BuildDetails getBuildDetails(Run build, TaskListener listener) {
     BuildDetails buildDetails = new BuildDetails();
     buildDetails.setIntegrationId(Configuration.get().getIntegrationId());
     buildDetails.setJobName(build.getParent().getDisplayName());
@@ -143,23 +137,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
           .getLogger()
           .println("Failed to populate config information due to - " + e.getMessage());
     }
-    Response<ScanResponse> response = cwpService.createScan(buildDetails).execute();
-    if (response.code() == 200) {
-      if (response.body() != null) {
-        return response.body().getId();
-      } else {
-        throw new AbortException("Failed to create scan");
-      }
-    } else {
-      String error = null;
-      if (response.errorBody() != null) {
-        error = IOUtils.toString(response.errorBody().byteStream(), Charset.defaultCharset());
-      }
-      throw new AbortException(
-          String.format(
-              "Received http status code %d with error message %s while creating scan",
-              response.code(), error));
-    }
+    return buildDetails;
   }
 
   private StandardUsernamePasswordCredentials resolveCredentials() throws AbortException {
@@ -190,16 +168,15 @@ public class ZscalerScan extends SimpleBuildWrapper {
   @VisibleForTesting
   void validateAndFailBuild(String results, TaskListener listener) throws IOException {
     listener.getLogger().println(results);
-
+  LOGGER.log(Level.INFO, "Results::" + results);
     if (isFailBuild()) {
       JSONObject jsonObject = new JSONObject(results);
-      JSONObject resultsBlock = jsonObject.getJSONObject("results");
-      JSONArray violations = resultsBlock.optJSONArray("violations");
+      JSONArray violations = jsonObject.optJSONArray("failed_policies");
       if (violations != null && violations.length() > 0) {
         for (int i = 0; i < violations.length(); i++) {
           JSONObject violation = violations.optJSONObject(i);
           String severity = violation.optString("severity");
-          if (severity != null && "HIGH".equals(severity.toUpperCase(Locale.ROOT))) {
+          if (severity != null && ("HIGH".equals(severity.toUpperCase(Locale.ROOT)) || "SEVERE".equals(severity.toUpperCase(Locale.ROOT)))) {
             throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
           }
         }

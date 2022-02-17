@@ -157,15 +157,13 @@ public class ZscannerSetup {
     String[] command = {
       "./zscanner",
       "login",
-      "-t",
-      "client-credentials",
+      "cc",
       "--client-id",
       clientId,
       "--client-secret",
       clientSecret,
       "-r",
-      configuration.getRegion().toUpperCase(Locale.ROOT),
-      "--disable-prompts"
+      configuration.getRegion().toUpperCase(Locale.ROOT)
     };
     if (proxyString != null) {
       ArrayUtils.add(command, "--proxy");
