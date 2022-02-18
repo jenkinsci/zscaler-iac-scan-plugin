@@ -74,8 +74,8 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       String[] command = {
               "./zscanner",
               "scan",
-//              "--config-path",
-//              configFile,
+              "--config-path",
+              configFile,
               "-o",
               "json",
               "-d",
@@ -85,11 +85,11 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               "--event-type",
               "BUILD",
               "--event-id",
-              buildDetails.getBuildNumber()
-//              "--repo",
-//              buildDetails.getRepoLoc()
-//              "--triggered-by",
-//              buildDetails.getBuildTriggeredBy()
+              buildDetails.getBuildNumber(),
+              "--repo",
+              buildDetails.getRepoLoc(),
+              "--triggered-by",
+              buildDetails.getBuildTriggeredBy()
       };
 
       if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scmType") != null) {
