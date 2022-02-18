@@ -41,5 +41,9 @@
     <concurrentBuild>false</concurrentBuild>
     <builders/>
     <publishers/>
-    <buildWrappers/>
+    <buildWrappers>
+        <io.jenkins.plugins.ZscalerScan plugin="zscaleriacscanner@1.0-SNAPSHOT">
+            <failBuild>true</failBuild>
+        </io.jenkins.plugins.ZscalerScan>
+    </buildWrappers>
 </project>
