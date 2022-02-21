@@ -74,10 +74,10 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       String[] command = {
               "./zscanner",
               "scan",
-              "--config-path",
-              configFile,
               "-o",
               "json",
+              "-m",
+              "cicd",
               "-d",
               workspace,
               "--sub-type",
@@ -87,14 +87,16 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               "--event-id",
               buildDetails.getBuildNumber(),
               "--repo",
-              buildDetails.getRepoLoc(),
-              "--triggered-by",
-              buildDetails.getBuildTriggeredBy()
+              buildDetails.getRepoLoc()
       };
 
-      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scmType") != null) {
+      if(buildDetails.getBuildTriggeredBy()!=null){
+        ArrayUtils.add(command,"--triggered-by");
+        ArrayUtils.add(command,buildDetails.getBuildTriggeredBy());
+      }
+      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scm_type") != null) {
         ArrayUtils.add(command, "--repo-type");
-        ArrayUtils.add(command, buildDetails.getAdditionalDetails().get("scmType"));
+        ArrayUtils.add(command, buildDetails.getAdditionalDetails().get("scm_type"));
       }
 
       if (proxyString != null) {
@@ -103,7 +105,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       }
       LOGGER.log(Level.INFO, "Command ::" + Arrays.toString(command) + "  Jenkins Home::" + jenkinsHome);
       exec = processBuilder.command(command).directory(new File(jenkinsHome)).start();
-
+      
       try (InputStream errorStream = exec.getErrorStream();
           InputStream resultStream = exec.getInputStream()) {
         resp = IOUtils.toString(resultStream, Charset.defaultCharset());

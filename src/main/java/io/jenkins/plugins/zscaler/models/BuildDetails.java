@@ -9,7 +9,7 @@ public class BuildDetails {
 
   public static final String jobType = "job_type";
 
-  public static final String scmType = "scm_ype";
+  public static final String scmType = "scm_type";
 
   @JsonProperty("job_name")
   private String jobName;

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.json.XML;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -38,7 +39,7 @@ public class SCMDetails {
           JSONArray svnModules = svnLocations.optJSONArray("hudson.scm.SubversionSCM_-ModuleLocation");
           if (svnModules != null && !svnModules.isEmpty()) {
             scmType = SCMConstants.SVN;
-            ArrayList list = new ArrayList<String>();
+            List<String> list = new ArrayList<String>();
             for (int i = 0; i < svnModules.length(); i++) {
               String remoteUrl = svnModules.getJSONObject(i).optString("remote");
               list.add(remoteUrl);

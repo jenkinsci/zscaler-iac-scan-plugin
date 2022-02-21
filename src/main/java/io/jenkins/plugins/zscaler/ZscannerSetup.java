@@ -158,6 +158,8 @@ public class ZscannerSetup {
       "./zscanner",
       "login",
       "cc",
+      "-m",
+      "cicd",
       "--client-id",
       clientId,
       "--client-secret",
@@ -169,6 +171,7 @@ public class ZscannerSetup {
       ArrayUtils.add(command, "--proxy");
       ArrayUtils.add(command, proxyString);
     }
+    LOGGER.log(Level.INFO,"Login Command:: " + ArrayUtils.toString(command));
     Process exec = processBuilder.command(command).directory(new File(binaryLoc)).start();
 
     try (InputStream errorStream = exec.getErrorStream();
@@ -197,12 +200,15 @@ public class ZscannerSetup {
     String[] command = {
       "./zscanner",
       "config",
+      "-m",
+      "cicd",
       "add",
       "-k",
       region.toUpperCase(Locale.ROOT),
       "-v",
       objectMapper.writeValueAsString(scannerConfig)
     };
+    LOGGER.log(Level.INFO, "Custom Region String::" + objectMapper.writeValueAsString(scannerConfig));
     Process exec = processBuilder.command(command).directory(new File(binaryLoc)).start();
     try (InputStream errorStream = exec.getErrorStream();
         InputStream resultStream = exec.getInputStream()) {
@@ -266,6 +272,6 @@ public class ZscannerSetup {
 
   public static void cleanup(String binaryLoc) throws IOException {
     ProcessBuilder process = new ProcessBuilder();
-    process.command("./zscanner", "logout").directory(new File(binaryLoc)).start();
+    process.command("./zscanner", "logout","-m","cicd").directory(new File(binaryLoc)).start();
   }
 }
