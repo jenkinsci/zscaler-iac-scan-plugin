@@ -31,7 +31,7 @@ public class SCMDetails {
           if (gitConfig != null) {
             String url = gitConfig.optString("url");
             buildDetails.setRepoLoc(url);
-            scmType = url.contains("gitlab.com") ? SCMConstants.GITLAB : SCMConstants.GITHUB;
+            scmType = url.contains("gitlab.com") ? SCMConstants.GITLAB : (url.contains("github.com") ? SCMConstants.GITHUB : "GIT");
           }
         }
         JSONObject svnLocations = scm.optJSONObject("locations");

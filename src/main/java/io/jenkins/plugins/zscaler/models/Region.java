@@ -3,7 +3,7 @@ package io.jenkins.plugins.zscaler.models;
 public enum Region {
   US_PROD("us-prod", "https://api.zscwp.io", "https://authourl.com"),
   EU_PROD("eu-prod", "https://api.zscwp.io", "https://authourl.com"),
-  PREVIEW("preview", "https://int.api.zscwp.io", "https://preview-auth.zscwp.io");
+  PREVIEW("preview", "https://preview.api.zscwp.io", "https://preview-auth.zscwp.io");
 
   private final String name;
   private final String apiUrl;

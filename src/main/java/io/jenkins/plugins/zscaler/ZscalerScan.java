@@ -176,7 +176,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
         for (int i = 0; i < violations.length(); i++) {
           JSONObject violation = violations.optJSONObject(i);
           String severity = violation.optString("severity");
-          if (severity != null && ("HIGH".equals(severity.toUpperCase(Locale.ROOT)) || "SEVERE".equals(severity.toUpperCase(Locale.ROOT)))) {
+          if (severity != null && ("HIGH".equals(severity.toUpperCase(Locale.ROOT)) || "CRITICAL".equals(severity.toUpperCase(Locale.ROOT)))) {
             throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
           }
         }

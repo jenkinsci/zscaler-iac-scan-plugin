@@ -105,7 +105,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       }
       LOGGER.log(Level.INFO, "Command ::" + Arrays.toString(command) + "  Jenkins Home::" + jenkinsHome);
       exec = processBuilder.command(command).directory(new File(jenkinsHome)).start();
-      
+
       try (InputStream errorStream = exec.getErrorStream();
           InputStream resultStream = exec.getInputStream()) {
         resp = IOUtils.toString(resultStream, Charset.defaultCharset());
@@ -149,7 +149,6 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       if (!apiUrl.endsWith("/")) {
         apiUrl = apiUrl + "/";
       }
-//      config.setUrl(apiUrl + "iac/findings-processor/v1/scan/results/" + scanId);
       webhook.setConfig(config);
       notifications.put("webhook", webhook);
       cliConfig.setNotifications(notifications);
