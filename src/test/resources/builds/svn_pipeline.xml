@@ -1,0 +1,40 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1145.v7f2433caa07f">
+    <actions/>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.26">
+            <gitLabConnection>GitlabTest</gitLabConnection>
+            <jobCredentialId></jobCredentialId>
+            <useAlternativeCredential>false</useAlternativeCredential>
+        </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    </properties>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2648.va9433432b33c">
+        <script>pipeline {
+            agent any
+
+            stages {
+            stage(&apos;Hello&apos;) {
+                steps {
+                echo &apos;Hello World&apos;
+                }
+            }
+            stage(&apos;checkout&apos;){
+                steps{
+                    checkout([$class: &apos;SubversionSCM&apos;, additionalCredentials: [], excludedCommitMessages: &apos;&apos;, excludedRegions: &apos;&apos;, excludedRevprop: &apos;&apos;, excludedUsers: &apos;&apos;, filterChangelog: false, ignoreDirPropChanges: false, includedRegions: &apos;&apos;, locations: [[cancelProcessOnExternalsFail: true, credentialsId: &apos;&apos;, depthOption: &apos;infinity&apos;, ignoreExternalsOption: true, local: &apos;.&apos;, remote: &apos;https://svn.example.com/repos/MyRepo/MyProject/trunk&apos;]], quietOperation: true, workspaceUpdater: [$class: &apos;UpdateUpdater&apos;]])
+                }
+            }
+            stage(&apos;IaC scan&apos;) {
+                steps{
+                    wrap([$class: &apos;ZscalerScan&apos;]) { }
+                }
+            }
+            }
+            }
+        </script>
+        <sandbox>true</sandbox>
+    </definition>
+    <triggers/>
+    <disabled>false</disabled>
+</flow-definition>

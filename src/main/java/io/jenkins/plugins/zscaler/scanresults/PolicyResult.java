@@ -10,12 +10,12 @@ import javax.annotation.Nullable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PolicyResult {
 
-  @JsonProperty("rule_name")
+  @JsonProperty("name")
   private String policyName;
 
   private String description;
 
-  @JsonProperty("rule_id")
+  @JsonProperty("policy_id")
   private String policyId;
 
   private String severity;
@@ -28,12 +28,14 @@ public class PolicyResult {
   @JsonProperty("resource_type")
   private String resourceType;
 
-  @JsonProperty("module_name")
-  private String moduleName;
-
+  @JsonProperty("file_path")
   private String file;
 
-  private int line;
+  @JsonProperty("start_line")
+  private int startLine;
+
+  @JsonProperty("end_line")
+  private int endLine;
 
   @JsonProperty("skip_comment")
   @Nullable
@@ -95,28 +97,12 @@ public class PolicyResult {
     this.resourceType = resourceType;
   }
 
-  public String getModuleName() {
-    return moduleName;
-  }
-
-  public void setModuleName(String moduleName) {
-    this.moduleName = moduleName;
-  }
-
   public String getFile() {
     return file;
   }
 
   public void setFile(String file) {
     this.file = file;
-  }
-
-  public int getLine() {
-    return line;
-  }
-
-  public void setLine(int line) {
-    this.line = line;
   }
 
   public String getSkipComment() {
@@ -126,4 +112,22 @@ public class PolicyResult {
   public void setSkipComment(String skipComment) {
     this.skipComment = skipComment;
   }
+
+  public int getStartLine() {
+    return startLine;
+  }
+
+  public void setStartLine(int startLine) {
+    this.startLine = startLine;
+  }
+
+  public int getEndLine() {
+    return endLine;
+  }
+
+  public void setEndLine(int endLine) {
+    this.endLine = endLine;
+  }
+
+  
 }

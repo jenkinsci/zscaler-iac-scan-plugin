@@ -1,10 +1,5 @@
 package io.jenkins.plugins.zscaler;
 
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.filter;
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.withId;
-import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials;
-import static org.apache.commons.lang.StringUtils.trimToEmpty;
-
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
@@ -21,14 +16,6 @@ import hudson.util.ListBoxModel;
 import io.jenkins.plugins.zscaler.models.CreateIntegrationResponse;
 import io.jenkins.plugins.zscaler.models.Region;
 import io.jenkins.plugins.zscaler.models.ValidateIntegrationRequest;
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
@@ -39,6 +26,20 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static com.cloudbees.plugins.credentials.CredentialsMatchers.filter;
+import static com.cloudbees.plugins.credentials.CredentialsMatchers.withId;
+import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials;
+import static org.apache.commons.lang.StringUtils.trimToEmpty;
 
 @Extension
 public class Configuration extends GlobalConfiguration implements Serializable, ExtensionPoint {
@@ -61,6 +62,7 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   static {
     REGIONTOURLMAP.put("us-prod", Region.US_PROD);
     REGIONTOURLMAP.put("eu-prod", Region.EU_PROD);
+    REGIONTOURLMAP.put("preview", Region.PREVIEW);
   }
 
   public Configuration() {
