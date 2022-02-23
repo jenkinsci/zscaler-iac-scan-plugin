@@ -146,12 +146,10 @@ public class ZscannerSetup {
     listener.getLogger().println("Initialising Zscaler IaC scanner");
     String clientId = credentials.getUsername();
     String clientSecret = credentials.getPassword().getPlainText();
-
     if ("custom".equals(configuration.getRegion())) {
       configureScanner(
           configuration.getRegion(), configuration.getApiUrl(), configuration.getAuthUrl());
     }
-
     ProcessBuilder processBuilder = new ProcessBuilder();
     String proxyString = ClientUtils.getProxyConfigString(proxy);
     String[] command = {
@@ -200,11 +198,11 @@ public class ZscannerSetup {
     String[] command = {
       "./zscanner",
       "config",
+      "add",
       "-m",
       "cicd",
-      "add",
       "-k",
-      region.toUpperCase(Locale.ROOT),
+      "custom_region",
       "-v",
       objectMapper.writeValueAsString(scannerConfig)
     };
