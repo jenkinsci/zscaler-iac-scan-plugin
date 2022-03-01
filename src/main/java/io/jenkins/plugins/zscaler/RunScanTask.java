@@ -86,10 +86,12 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               "BUILD",
               "--event-id",
               buildDetails.getBuildNumber(),
-              "--repo",
-              buildDetails.getRepoLoc()
       };
 
+      if (buildDetails.getRepoLoc() != null) {
+        ArrayUtils.add(command, "--repo");
+        ArrayUtils.add(command, buildDetails.getRepoLoc());
+      }
       if(buildDetails.getBuildTriggeredBy()!=null){
         ArrayUtils.add(command,"--triggered-by");
         ArrayUtils.add(command,buildDetails.getBuildTriggeredBy());
