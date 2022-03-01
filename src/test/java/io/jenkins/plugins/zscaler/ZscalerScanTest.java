@@ -97,7 +97,7 @@ public class ZscalerScanTest {
       File resourceFolder = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1")).toFile();
       Path buildNumberFolder = Paths.get(resourceFolder.getAbsolutePath(), "1");
       String iacScanResults = buildNumberFolder.toString();
-      underTest.postResultsToWorkspace(iacScanResults, jobFolder.getPath(), 2);
+      underTest.postResultsToWorkspace(iacScanResults, jobFolder.getPath().replaceFirst("^/(.:/)", "$1"), 2);
 
       path = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1"), String.valueOf(2), "iac-scan-results", 2 + ".json");
 
