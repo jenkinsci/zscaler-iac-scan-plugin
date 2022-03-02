@@ -6,7 +6,14 @@ import hudson.AbortException;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.zscaler.models.BuildDetails;
 import io.jenkins.plugins.zscaler.models.NotificationsConfig;
+import jenkins.security.MasterToSlaveCallable;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import jenkins.security.MasterToSlaveCallable;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException> {
 
@@ -30,21 +35,21 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
   Configuration configuration;
   String binaryLoc;
   ProxyConfiguration proxyConfiguration;
-  String scanId;
-
+  BuildDetails buildDetails;
+  private static final Logger LOGGER = Logger.getLogger(RunScanTask.class.getName());
   public RunScanTask(
       TaskListener listener,
       FilePath workspace,
       Configuration configuration,
       String binaryLoc,
       ProxyConfiguration proxyConfiguration,
-      String scanId) {
+      BuildDetails buildDetails) {
     this.listener = listener;
     this.workspace = workspace;
     this.configuration = configuration;
     this.binaryLoc = binaryLoc;
     this.proxyConfiguration = proxyConfiguration;
-    this.scanId = scanId;
+    this.buildDetails = buildDetails;
   }
 
   @Override
@@ -67,22 +72,40 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
     String proxyString = ClientUtils.getProxyConfigString(proxyConfiguration);
     try {
       String[] command = {
-          "./zscanner",
-          "scan",
-          "--scan-id",
-          scanId,
-          "--config-path",
-          configFile,
-          "--show-passed",
-          "-o",
-          "json",
-          "-d",
-          workspace
+              "./zscanner",
+              "scan",
+              "-o",
+              "json",
+              "-m",
+              "cicd",
+              "-d",
+              workspace,
+              "--sub-type",
+              "JENKINS",
+              "--event-type",
+              "BUILD",
+              "--event-id",
+              buildDetails.getBuildNumber(),
       };
+
+      if (buildDetails.getRepoLoc() != null) {
+        ArrayUtils.add(command, "--repo");
+        ArrayUtils.add(command, buildDetails.getRepoLoc());
+      }
+      if(buildDetails.getBuildTriggeredBy()!=null){
+        ArrayUtils.add(command,"--triggered-by");
+        ArrayUtils.add(command,buildDetails.getBuildTriggeredBy());
+      }
+      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scm_type") != null) {
+        ArrayUtils.add(command, "--repo-type");
+        ArrayUtils.add(command, buildDetails.getAdditionalDetails().get("scm_type"));
+      }
+
       if (proxyString != null) {
         ArrayUtils.add(command, "--proxy");
         ArrayUtils.add(command, proxyString);
       }
+      LOGGER.log(Level.INFO, "Command ::" + Arrays.toString(command) + "  Jenkins Home::" + jenkinsHome);
       exec = processBuilder.command(command).directory(new File(jenkinsHome)).start();
 
       try (InputStream errorStream = exec.getErrorStream();
@@ -128,7 +151,6 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       if (!apiUrl.endsWith("/")) {
         apiUrl = apiUrl + "/";
       }
-      config.setUrl(apiUrl + "iac/findings-processor/v1/scan/results/" + scanId);
       webhook.setConfig(config);
       notifications.put("webhook", webhook);
       cliConfig.setNotifications(notifications);

@@ -1,29 +1,33 @@
 package io.jenkins.plugins.zscaler.scanresults;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ScanSummary {
 
-  @JsonProperty("file/folder")
+  @JsonProperty("scan_path")
   private String fileOrFolder;
 
-  @JsonProperty("iac_type")
-  private String iacType;
+  private String status;
 
   @JsonProperty("scanned_at")
   private String scannedAt;
 
-  @JsonProperty("policies_validated")
-  private int policiesValidated;
+  @JsonProperty("template_type")
+  private List<String> iacType;
 
-  @JsonProperty("violated_policies")
-  private int violatedPolicies;
+  @JsonProperty("total_policies")
+  private int totalPolicies;
 
-  private int low;
+  @JsonProperty("passed_policies")
+  private int passedPolicies;
 
-  private int medium;
+  @JsonProperty("failed_policies")
+  private ScanResultStats failedPolicies;
 
-  private int high;
+  @JsonProperty("skipped_policies")
+  private ScanResultStats skippedPolicies;
 
   public String getFileOrFolder() {
     return fileOrFolder;
@@ -33,12 +37,12 @@ public class ScanSummary {
     this.fileOrFolder = fileOrFolder;
   }
 
-  public String getIacType() {
-    return iacType;
+  public String getStatus() {
+    return status;
   }
 
-  public void setIacType(String iacType) {
-    this.iacType = iacType;
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   public String getScannedAt() {
@@ -49,43 +53,34 @@ public class ScanSummary {
     this.scannedAt = scannedAt;
   }
 
-  public int getPoliciesValidated() {
-    return policiesValidated;
+  public List<String> getIacType() {
+    return iacType;
   }
 
-  public void setPoliciesValidated(int policiesValidated) {
-    this.policiesValidated = policiesValidated;
+  public void setIacType(List<String> iacType) {
+    this.iacType = iacType;
   }
 
-  public int getViolatedPolicies() {
-    return violatedPolicies;
+  public int getTotalPolicies() {
+    return totalPolicies;
   }
 
-  public void setViolatedPolicies(int violatedPolicies) {
-    this.violatedPolicies = violatedPolicies;
+  public void setTotalPolicies(int totalPolicies) {
+    this.totalPolicies = totalPolicies;
   }
 
-  public int getLow() {
-    return low;
+  public int getPassedPolicies() {
+    return passedPolicies;
   }
 
-  public void setLow(int low) {
-    this.low = low;
+  public void setPassedPolicies(int passedPolicies) {
+    this.passedPolicies = passedPolicies;
   }
 
-  public int getMedium() {
-    return medium;
-  }
-
-  public void setMedium(int medium) {
-    this.medium = medium;
-  }
-
-  public int getHigh() {
-    return high;
-  }
-
-  public void setHigh(int high) {
-    this.high = high;
+  @Override
+  public String toString() {
+    return "ScanSummary [failedPolicies=" + failedPolicies + ", fileOrFolder=" + fileOrFolder + ", iacType=" + iacType
+        + ", passedPolicies=" + passedPolicies + ", scannedAt=" + scannedAt + ", skippedPolicies=" + skippedPolicies
+        + ", status=" + status + ", totalPolicies=" + totalPolicies + "]";
   }
 }

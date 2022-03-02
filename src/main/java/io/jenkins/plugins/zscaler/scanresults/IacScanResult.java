@@ -11,19 +11,19 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IacScanResult {
 
-  @JsonProperty("passed_rules")
+  @JsonProperty("passed_policies")
   @Nullable
   private List<PolicyResult> passed;
 
-  @JsonProperty("violations")
+  @JsonProperty("failed_policies")
   @Nullable
   private List<PolicyResult> failed;
 
-  @JsonProperty("skipped_violations")
+  @JsonProperty("skipped_policies")
   @Nullable
   private List<PolicyResult> skipped;
 
-  @JsonProperty("scan_summary")
+  @JsonProperty("summary")
   private ScanSummary scanSummary;
 
   public List<PolicyResult> getPassed() {

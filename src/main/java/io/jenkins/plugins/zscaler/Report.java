@@ -1,18 +1,27 @@
 package io.jenkins.plugins.zscaler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.model.Job;
 import hudson.model.ManagementLink;
 import hudson.model.Run;
-import io.jenkins.plugins.zscaler.scanresults.ScanResultWrapper;
+import io.jenkins.plugins.zscaler.models.BuildDetails;
+import io.jenkins.plugins.zscaler.models.ScanMetadata;
+import io.jenkins.plugins.zscaler.scanresults.IacScanResult;
 import jenkins.model.RunAction2;
+import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.export.ExportedBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @ExportedBean
 public class Report extends ManagementLink implements RunAction2 {
@@ -61,32 +70,72 @@ public class Report extends ManagementLink implements RunAction2 {
     }
   }
 
+  public String getMetaData() {
+    ScanMetadata metadata = new ScanMetadata();
+    IacScanResult result = getBuildResults();
+
+    try {
+      if (result.getScanSummary() != null && result.getScanSummary().getScannedAt() != null) {
+        String scannedAt = result.getScanSummary().getScannedAt();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSSSSXXX");
+        Date scannedDate = sdf.parse(scannedAt);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+        metadata.setDate(dateFormatter.format(scannedDate));
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm a");
+        metadata.setTime(timeFormatter.format(scannedDate));
+      }
+      metadata.setBuildNumber(String.valueOf(run.getNumber()));
+      metadata.setBuildStatus(run.getResult().toString());
+      metadata.setOrganization("testorg");
+      metadata.setProject(run.getParent().getName());
+      BuildDetails details = new BuildDetails();
+      SCMDetails.populateSCMDetails(details, getConfigXml(run));
+      if (details.getRepoLoc() != null) {
+        metadata.setRepo(details.getRepoLoc());
+      }
+      return new ObjectMapper().writeValueAsString(metadata);
+    } catch (Exception e) {
+      LOG.error("Failed to build scan metadata" + e.getMessage(), e);
+    }
+    return null;
+  }
+
   public String getResults() {
+    try {
+      IacScanResult scanResult = getBuildResults();
+      ObjectMapper mapper = new ObjectMapper();
+      if (scanResult.getSkipped() == null) {
+        scanResult.setSkipped(new ArrayList<>());
+      }
+      if (scanResult.getPassed() == null) {
+        scanResult.setPassed(new ArrayList<>());
+      }
+      if (scanResult.getFailed() == null) {
+        scanResult.setFailed(new ArrayList<>());
+      }
+      LOG.info("Scan metadata ::" + getMetaData());
+      LOG.info("Scan Results ::" + mapper.writeValueAsString(scanResult));
+      return mapper.writeValueAsString(scanResult);
+    } catch (Exception e) {
+      LOG.error("Failed to map the scan results as string");
+    }
+    return null;
+  }
+
+  private IacScanResult getBuildResults() {
     Path resultFilePath = null;
     try {
       File buildDir = run.getParent().getBuildDir();
-      resultFilePath =
-          Paths.get(
-              buildDir.getAbsolutePath(),
-              String.valueOf(run.getNumber()),
-              "iac-scan-results",
-              run.getNumber() + ".json");
+      resultFilePath = Paths.get(
+              buildDir.getAbsolutePath().replaceFirst("^/(.:/)", "$1"),
+          String.valueOf(run.getNumber()),
+          "iac-scan-results",
+          run.getNumber() + ".json");
       File resultFile = resultFilePath.toFile();
-
       ObjectMapper mapper = new ObjectMapper();
-      ScanResultWrapper scanResult = mapper.readValue(resultFile, ScanResultWrapper.class);
+      IacScanResult scanResult = mapper.readValue(resultFile, IacScanResult.class);
       if (scanResult != null) {
-        if (scanResult.getResult().getSkipped() == null) {
-          scanResult.getResult().setSkipped(new ArrayList<>());
-        }
-        if (scanResult.getResult().getPassed() == null) {
-          scanResult.getResult().setPassed(new ArrayList<>());
-        }
-        if (scanResult.getResult().getFailed() == null) {
-          scanResult.getResult().setFailed(new ArrayList<>());
-        }
-
-        return mapper.writeValueAsString(scanResult);
+        return scanResult;
       } else {
         LOG.error("Failed to read results from {}", resultFile.getAbsolutePath());
         return null;
@@ -94,6 +143,26 @@ public class Report extends ManagementLink implements RunAction2 {
 
     } catch (Exception e) {
       LOG.error("Failed to read the file {} due to {}", resultFilePath, e.getMessage());
+    }
+    return null;
+  }
+
+  private String getConfigXml(Run build) {
+    Job job = build.getParent();
+    File jobDir = job.getRootDir();
+    File[] files = jobDir.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        if (file.getName().equals("config.xml")) {
+          try (FileInputStream fileStream = new FileInputStream(file)) {
+            return IOUtils.toString(fileStream, Charset.defaultCharset());
+          } catch (IOException e) {
+            LOG.info(
+                String.format(
+                    "Failed to read file - %s/%s ", file.getAbsolutePath(), file.getName()));
+          }
+        }
+      }
     }
     return null;
   }

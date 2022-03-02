@@ -146,31 +146,30 @@ public class ZscannerSetup {
     listener.getLogger().println("Initialising Zscaler IaC scanner");
     String clientId = credentials.getUsername();
     String clientSecret = credentials.getPassword().getPlainText();
-
     if ("custom".equals(configuration.getRegion())) {
       configureScanner(
           configuration.getRegion(), configuration.getApiUrl(), configuration.getAuthUrl());
     }
-
     ProcessBuilder processBuilder = new ProcessBuilder();
     String proxyString = ClientUtils.getProxyConfigString(proxy);
     String[] command = {
       "./zscanner",
       "login",
-      "-t",
-      "client-credentials",
+      "cc",
+      "-m",
+      "cicd",
       "--client-id",
       clientId,
       "--client-secret",
       clientSecret,
       "-r",
-      configuration.getRegion().toUpperCase(Locale.ROOT),
-      "--disable-prompts"
+      configuration.getRegion().toUpperCase(Locale.ROOT)
     };
     if (proxyString != null) {
       ArrayUtils.add(command, "--proxy");
       ArrayUtils.add(command, proxyString);
     }
+    LOGGER.log(Level.INFO,"Login Command:: " + ArrayUtils.toString(command));
     Process exec = processBuilder.command(command).directory(new File(binaryLoc)).start();
 
     try (InputStream errorStream = exec.getErrorStream();
@@ -200,11 +199,14 @@ public class ZscannerSetup {
       "./zscanner",
       "config",
       "add",
+      "-m",
+      "cicd",
       "-k",
-      region.toUpperCase(Locale.ROOT),
+      "custom_region",
       "-v",
       objectMapper.writeValueAsString(scannerConfig)
     };
+    LOGGER.log(Level.INFO, "Custom Region String::" + objectMapper.writeValueAsString(scannerConfig));
     Process exec = processBuilder.command(command).directory(new File(binaryLoc)).start();
     try (InputStream errorStream = exec.getErrorStream();
         InputStream resultStream = exec.getInputStream()) {
@@ -268,6 +270,6 @@ public class ZscannerSetup {
 
   public static void cleanup(String binaryLoc) throws IOException {
     ProcessBuilder process = new ProcessBuilder();
-    process.command("./zscanner", "logout").directory(new File(binaryLoc)).start();
+    process.command("./zscanner", "logout","-m","cicd").directory(new File(binaryLoc)).start();
   }
 }
