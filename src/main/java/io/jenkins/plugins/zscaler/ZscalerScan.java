@@ -36,6 +36,8 @@ public class ZscalerScan extends SimpleBuildWrapper {
 
   private boolean failBuild;
 
+  private String logLevel;
+
   @DataBoundConstructor
   public ZscalerScan(boolean failBuild) {
     this.failBuild = failBuild;
@@ -124,8 +126,15 @@ public class ZscalerScan extends SimpleBuildWrapper {
               if (failBuild != null) {
                 buildDetails.addAdditionalDetails("fail_build", failBuild);
               }
+              String configLogLevel = pluginConfig.optString("logLevel");
+              if (configLogLevel != null) {
+                buildDetails.addAdditionalDetails("log_level", configLogLevel);
+              }
             }
           }
+        }
+        if (getLogLevel() != null) {
+          buildDetails.addAdditionalDetails("log_level", getLogLevel());
         }
       } else {
         listener
@@ -214,6 +223,15 @@ public class ZscalerScan extends SimpleBuildWrapper {
   @DataBoundSetter
   public void setFailBuild(boolean failBuild) {
     this.failBuild = failBuild;
+  }
+
+  public String getLogLevel() {
+    return logLevel;
+  }
+
+  @DataBoundSetter
+  public void setLogLevel(String logLevel) {
+    this.logLevel = logLevel;
   }
 
   @Extension
