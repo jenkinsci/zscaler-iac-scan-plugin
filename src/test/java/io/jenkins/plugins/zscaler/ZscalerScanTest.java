@@ -37,7 +37,7 @@ public class ZscalerScanTest {
   @Test(expected = AbortException.class)
   public void validateAndFailBuild() throws IOException {
     underTest.setFailBuild(true);
-
+    underTest.setLogLevel("debug");
     TaskListener taskListenerMock = Mockito.mock(TaskListener.class);
     PrintStream mocklogStream = Mockito.mock(PrintStream.class);
     when(taskListenerMock.getLogger()).thenReturn(mocklogStream);
@@ -65,6 +65,7 @@ public class ZscalerScanTest {
   @Test(expected = AbortException.class)
   public void validateAndPostResultsToCWP_withfail() throws IOException {
     underTest.setFailBuild(true);
+    underTest.setLogLevel("debug");
     TaskListener taskListenerMock = Mockito.mock(TaskListener.class);
     PrintStream mocklogStream = Mockito.mock(PrintStream.class);
     when(taskListenerMock.getLogger()).thenReturn(mocklogStream);

@@ -1,5 +1,18 @@
 package io.jenkins.plugins.zscaler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.model.Job;
+import hudson.model.ManagementLink;
+import hudson.model.Run;
+import io.jenkins.plugins.zscaler.models.BuildDetails;
+import io.jenkins.plugins.zscaler.models.ScanMetadata;
+import io.jenkins.plugins.zscaler.scanresults.IacScanResult;
+import jenkins.model.RunAction2;
+import org.apache.commons.io.IOUtils;
+import org.kohsuke.stapler.export.ExportedBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,21 +22,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.apache.commons.io.IOUtils;
-import org.kohsuke.stapler.export.ExportedBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import hudson.model.Job;
-import hudson.model.ManagementLink;
-import hudson.model.Run;
-import io.jenkins.plugins.zscaler.models.BuildDetails;
-import io.jenkins.plugins.zscaler.models.ScanMetadata;
-import io.jenkins.plugins.zscaler.scanresults.IacScanResult;
-import jenkins.model.RunAction2;
 
 @ExportedBean
 public class Report extends ManagementLink implements RunAction2 {
@@ -72,7 +70,7 @@ public class Report extends ManagementLink implements RunAction2 {
     }
   }
 
-  public String getMetaData() {
+  public ScanMetadata getMetaData() {
     ScanMetadata metadata = new ScanMetadata();
     IacScanResult result = getBuildResults();
 
@@ -95,7 +93,7 @@ public class Report extends ManagementLink implements RunAction2 {
       if (details.getRepoLoc() != null) {
         metadata.setRepo(details.getRepoLoc());
       }
-      return new ObjectMapper().writeValueAsString(metadata);
+      return metadata;
     } catch (Exception e) {
       LOG.error("Failed to build scan metadata" + e.getMessage(), e);
     }
@@ -115,7 +113,10 @@ public class Report extends ManagementLink implements RunAction2 {
       if (scanResult.getFailed() == null) {
         scanResult.setFailed(new ArrayList<>());
       }
-      LOG.info("Scan metadata ::" + getMetaData());
+      ScanMetadata metadata = getMetaData();
+      if (metadata != null) {
+        scanResult.setMetadata(metadata);
+      }
       LOG.info("Scan Results ::" + mapper.writeValueAsString(scanResult));
       return mapper.writeValueAsString(scanResult);
     } catch (Exception e) {
