@@ -8,7 +8,7 @@
         <l:main-panel>
             <script>
                 function resizeIframe(obj) {
-                    obj.contentWindow.postMessage(${it.results}, 'https://iac.d2gpa9dgoocxii.amplifyapp.com');
+                    obj.contentWindow.postMessage(${it.results}, 'https://iac.dsoq7exnfdbmq.amplifyapp.com/');
                     let originHeight = obj.contentWindow.document.body.scrollHeight;
                     obj.style.height = (originHeight + 100) + 'px';
                     setInterval(() => {
