@@ -7,14 +7,15 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
 import jenkins.security.MasterToSlaveCallable;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,28 +78,33 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               buildDetails.getBuildNumber(),
       };
 
+      List<String> commandPrefix = Arrays.asList(command);
+      List<String> commandList = new ArrayList<>();
+      commandList.addAll(commandPrefix);
+
       if (buildDetails.getRepoLoc() != null) {
-        ArrayUtils.add(command, "--repo");
-        ArrayUtils.add(command, buildDetails.getRepoLoc());
+        commandList.add("--repo");
+        commandList.add(buildDetails.getRepoLoc());
       }
-      if(buildDetails.getBuildTriggeredBy()!=null){
-        ArrayUtils.add(command,"--triggered-by");
-        ArrayUtils.add(command,buildDetails.getBuildTriggeredBy());
+
+      if(buildDetails.getBuildTriggeredBy() != null){
+        commandList.add("--triggered-by");
+        commandList.add(buildDetails.getBuildTriggeredBy());
       }
       if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scm_type") != null) {
-        ArrayUtils.add(command, "--repo-type");
-        ArrayUtils.add(command, buildDetails.getAdditionalDetails().get("scm_type"));
+        commandList.add("--repo-type");
+        commandList.add(buildDetails.getAdditionalDetails().get("scm_type"));
       }
       if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("log_level") != null) {
-        ArrayUtils.add(command, "-l");
-        ArrayUtils.add(command, buildDetails.getAdditionalDetails().get("log_level"));
+        commandList.add("--log-level");
+        commandList.add(buildDetails.getAdditionalDetails().get("log_level"));
       }
       if (proxyString != null) {
-        ArrayUtils.add(command, "--proxy");
-        ArrayUtils.add(command, proxyString);
+        commandList.add("--proxy");
+        commandList.add(proxyString);
       }
-      LOGGER.log(Level.INFO, "Command ::" + Arrays.toString(command) + "  Jenkins Home::" + jenkinsHome);
-      exec = processBuilder.command(command).directory(new File(jenkinsHome)).start();
+      LOGGER.log(Level.INFO, "Command ::" + commandList + "  Jenkins Home::" + jenkinsHome);
+      exec = processBuilder.command(commandList).directory(new File(jenkinsHome)).start();
 
       try (InputStream errorStream = exec.getErrorStream();
           InputStream resultStream = exec.getInputStream()) {
