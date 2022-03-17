@@ -23,7 +23,7 @@ public class ReportTest {
   public static void init() {
     run = Mockito.mock(Run.class, Mockito.RETURNS_DEEP_STUBS);
     URL buildNumberFolder = Resources.getResource("sample");
-    Path resourceFolder = Paths.get(buildNumberFolder.getPath());
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$1"));
     Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
     Mockito.when(run.getNumber()).thenReturn(1);
     underTest = new Report(run);

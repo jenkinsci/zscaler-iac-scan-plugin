@@ -43,8 +43,6 @@ public class ZscannerSetup {
   StandardUsernamePasswordCredentials credentials;
   ProxyConfiguration proxy;
 
-  // TODO need to read this from API call response
-  private static final String CLI_VERSION = "v0.0.1";
 
   public ZscannerSetup(
       TaskListener listener,
@@ -97,7 +95,7 @@ public class ZscannerSetup {
   private void downloadScanner() throws IOException {
     listener.getLogger().println("Downloading Zscaler IaC scanner");
 
-    String body = "{\"version\": \"%s\",\"platform\": \"%s\",\"arch\":\"%s\"}";
+    String body = "{\"platform\": \"%s\",\"arch\":\"%s\"}";
 
     String osArch = SystemUtils.OS_ARCH;
     if (osArch.equals("amd64")) {
@@ -109,7 +107,7 @@ public class ZscannerSetup {
     if (osName.toLowerCase(Locale.ROOT).contains("mac")) {
       osName = "Darwin";
     }
-    body = String.format(body, CLI_VERSION, osName, osArch);
+    body = String.format(body, osName, osArch);
 
     Response<ResponseBody> download = cwpService.downloadScanner(body).execute();
     String scannerCompressedFilePath = binaryLoc + File.separator + "zscanner.tar.gz";

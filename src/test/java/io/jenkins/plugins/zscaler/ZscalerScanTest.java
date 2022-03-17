@@ -37,7 +37,7 @@ public class ZscalerScanTest {
   @Test(expected = AbortException.class)
   public void validateAndFailBuild() throws IOException {
     underTest.setFailBuild(true);
-
+    underTest.setLogLevel("debug");
     TaskListener taskListenerMock = Mockito.mock(TaskListener.class);
     PrintStream mocklogStream = Mockito.mock(PrintStream.class);
     when(taskListenerMock.getLogger()).thenReturn(mocklogStream);
@@ -51,11 +51,11 @@ public class ZscalerScanTest {
     Job mockJob = Mockito.mock(Job.class);
 
     when(buildMock.getParent()).thenReturn(mockJob);
-    File resourceFolder = Paths.get(jobFolder.getPath()).toFile();
+    File resourceFolder = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1")).toFile();
     when(mockJob.getRootDir()).thenReturn(resourceFolder);
 
     Path buildNumberFolder = Paths.get(resourceFolder.getAbsolutePath(), "1");
-    String iacScanResults = buildNumberFolder.toString();
+    String iacScanResults = buildNumberFolder.toString().replaceFirst("^/(.:/)", "$1");
     Path path = Paths.get(iacScanResults, "iac-scan-results", "1.json");
     String results = IOUtils.toString(path.toUri(), Charset.defaultCharset());
 
@@ -65,6 +65,7 @@ public class ZscalerScanTest {
   @Test(expected = AbortException.class)
   public void validateAndPostResultsToCWP_withfail() throws IOException {
     underTest.setFailBuild(true);
+    underTest.setLogLevel("debug");
     TaskListener taskListenerMock = Mockito.mock(TaskListener.class);
     PrintStream mocklogStream = Mockito.mock(PrintStream.class);
     when(taskListenerMock.getLogger()).thenReturn(mocklogStream);
@@ -78,11 +79,11 @@ public class ZscalerScanTest {
     Job mockJob = Mockito.mock(Job.class);
 
     when(buildMock.getParent()).thenReturn(mockJob);
-    File resourceFolder = Paths.get(jobFolder.getPath()).toFile();
+    File resourceFolder = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1")).toFile();
     when(mockJob.getRootDir()).thenReturn(resourceFolder);
 
     Path buildNumberFolder = Paths.get(resourceFolder.getAbsolutePath(), "1");
-    String iacScanResults = buildNumberFolder.toString();
+    String iacScanResults = buildNumberFolder.toString().replaceFirst("^/(.:/)", "$1");
     Path path = Paths.get(iacScanResults, "iac-scan-results", "1.json");
     String results = IOUtils.toString(path.toUri(), Charset.defaultCharset());
 
@@ -94,12 +95,12 @@ public class ZscalerScanTest {
     Path path = null;
     try {
       URL jobFolder = Resources.getResource("sample");
-      File resourceFolder = Paths.get(jobFolder.getPath()).toFile();
+      File resourceFolder = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1")).toFile();
       Path buildNumberFolder = Paths.get(resourceFolder.getAbsolutePath(), "1");
       String iacScanResults = buildNumberFolder.toString();
-      underTest.postResultsToWorkspace(iacScanResults, jobFolder.getPath(), 2);
+      underTest.postResultsToWorkspace(iacScanResults, jobFolder.getPath().replaceFirst("^/(.:/)", "$1"), 2);
 
-      path = Paths.get(jobFolder.getPath(), String.valueOf(2), "iac-scan-results", 2 + ".json");
+      path = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1"), String.valueOf(2), "iac-scan-results", 2 + ".json");
 
       Assert.assertTrue(path.toFile().exists());
       String result = IOUtils.toString(path.toUri(), Charset.defaultCharset());

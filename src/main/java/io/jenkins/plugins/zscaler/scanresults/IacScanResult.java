@@ -3,6 +3,7 @@ package io.jenkins.plugins.zscaler.scanresults;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.zscaler.models.ScanMetadata;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,6 +26,9 @@ public class IacScanResult {
 
   @JsonProperty("summary")
   private ScanSummary scanSummary;
+
+  @JsonProperty("metadata")
+  private ScanMetadata metadata;
 
   public List<PolicyResult> getPassed() {
     return passed;
@@ -56,5 +60,13 @@ public class IacScanResult {
 
   public void setScanSummary(ScanSummary scanSummary) {
     this.scanSummary = scanSummary;
+  }
+
+  public ScanMetadata getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(ScanMetadata metadata) {
+    this.metadata = metadata;
   }
 }

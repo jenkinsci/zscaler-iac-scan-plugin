@@ -1,30 +1,21 @@
 package io.jenkins.plugins.zscaler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import hudson.AbortException;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
-import io.jenkins.plugins.zscaler.models.NotificationsConfig;
 import jenkins.security.MasterToSlaveCallable;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,7 +59,6 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
     ProcessBuilder processBuilder = new ProcessBuilder();
     Process exec = null;
     String resp;
-    String configFile = getConfigFile(jenkinsHome);
     String proxyString = ClientUtils.getProxyConfigString(proxyConfiguration);
     try {
       String[] command = {
@@ -86,25 +76,35 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               "BUILD",
               "--event-id",
               buildDetails.getBuildNumber(),
-              "--repo",
-              buildDetails.getRepoLoc()
       };
 
-      if(buildDetails.getBuildTriggeredBy()!=null){
-        ArrayUtils.add(command,"--triggered-by");
-        ArrayUtils.add(command,buildDetails.getBuildTriggeredBy());
-      }
-      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scm_type") != null) {
-        ArrayUtils.add(command, "--repo-type");
-        ArrayUtils.add(command, buildDetails.getAdditionalDetails().get("scm_type"));
+      List<String> commandPrefix = Arrays.asList(command);
+      List<String> commandList = new ArrayList<>();
+      commandList.addAll(commandPrefix);
+
+      if (buildDetails.getRepoLoc() != null) {
+        commandList.add("--repo");
+        commandList.add(buildDetails.getRepoLoc());
       }
 
-      if (proxyString != null) {
-        ArrayUtils.add(command, "--proxy");
-        ArrayUtils.add(command, proxyString);
+      if(buildDetails.getBuildTriggeredBy() != null){
+        commandList.add("--triggered-by");
+        commandList.add(buildDetails.getBuildTriggeredBy());
       }
-      LOGGER.log(Level.INFO, "Command ::" + Arrays.toString(command) + "  Jenkins Home::" + jenkinsHome);
-      exec = processBuilder.command(command).directory(new File(jenkinsHome)).start();
+      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scm_type") != null) {
+        commandList.add("--repo-type");
+        commandList.add(buildDetails.getAdditionalDetails().get("scm_type"));
+      }
+      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("log_level") != null) {
+        commandList.add("--log-level");
+        commandList.add(buildDetails.getAdditionalDetails().get("log_level"));
+      }
+      if (proxyString != null) {
+        commandList.add("--proxy");
+        commandList.add(proxyString);
+      }
+      LOGGER.log(Level.INFO, "Command ::" + commandList + "  Jenkins Home::" + jenkinsHome);
+      exec = processBuilder.command(commandList).directory(new File(jenkinsHome)).start();
 
       try (InputStream errorStream = exec.getErrorStream();
           InputStream resultStream = exec.getInputStream()) {
@@ -118,9 +118,6 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       if (exec != null) {
         exec.destroy();
       }
-      if (Paths.get(configFile).toFile().exists()) {
-        FileUtils.forceDelete(Paths.get(configFile).toFile());
-      }
       ZscannerSetup.cleanup(binaryLoc);
     }
 
@@ -131,32 +128,5 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
     } else {
       return resp;
     }
-  }
-
-  private String getConfigFile(String jenkinsHome) throws IOException {
-    String apiUrl = configuration.getApiUrl();
-    Path configFile = Paths.get(jenkinsHome, "zscaler", "config.yaml");
-    if (!configFile.toFile().exists()) {
-      Files.createFile(
-          configFile,
-          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxr--r--")));
-      NotificationsConfig cliConfig = new NotificationsConfig();
-
-      Map<String, NotificationsConfig.WebHook> notifications = new HashMap<>();
-      NotificationsConfig.WebHook webhook = new NotificationsConfig.WebHook();
-      webhook.setType("webhook");
-      NotificationsConfig.Config config = new NotificationsConfig.Config();
-      if (!apiUrl.endsWith("/")) {
-        apiUrl = apiUrl + "/";
-      }
-      webhook.setConfig(config);
-      notifications.put("webhook", webhook);
-      cliConfig.setNotifications(notifications);
-
-      ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-      objectMapper.writeValue(configFile.toFile(), cliConfig);
-    }
-
-    return configFile.toAbsolutePath().toString();
   }
 }
