@@ -24,7 +24,7 @@
                     data-crumbtoken="${it.crumbToken}"
                     style="border: none;min-width: 800px; height: 100%"
                     id="iac-plugin-container"
-                    width="100%" src="https://iac.d2gpa9dgoocxii.amplifyapp.com"
+                    width="100%" src="https://iac.d3v0xa3iy204a7.amplifyapp.com"
                     onload="resizeIframe(this)"
             />
         </l:main-panel>
