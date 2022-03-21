@@ -8,17 +8,10 @@
         <l:main-panel>
             <script>
                 function resizeIframe(obj) {
-                    obj.contentWindow.postMessage(${it.results}, 'https://iac.d3v0xa3iy204a7.amplifyapp.com');
-                    let originHeight = obj.contentWindow.document.body.scrollHeight;
-                    obj.style.height = (originHeight + 100) + 'px';
-                    setInterval(() => {
-                        let curHeight = obj.contentWindow.document.body.scrollHeight;
-                        if (originHeight !== curHeight) {
-                            obj.style.height = (curHeight + 100) + 'px';
-                        }
-                    }, 100)
+                    obj.contentWindow.postMessage(${it.results}, 'https://iac.d3v0xa3iy204a7.amplifyapp.com/');
                 }
             </script>
+
             <iframe
                     data-crumbtoken-field="${it.crumbRequestField}"
                     data-crumbtoken="${it.crumbToken}"

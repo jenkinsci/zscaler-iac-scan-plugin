@@ -14,8 +14,6 @@ public class ScanMetadata {
 
     private String project;
 
-    private String organization;
-
     public String getDate() {
         return date;
     }
@@ -62,13 +60,5 @@ public class ScanMetadata {
 
     public void setProject(String project) {
         this.project = project;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
     }
 }
