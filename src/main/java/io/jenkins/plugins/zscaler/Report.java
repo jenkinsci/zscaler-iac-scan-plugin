@@ -86,7 +86,6 @@ public class Report extends ManagementLink implements RunAction2 {
       }
       metadata.setBuildNumber(String.valueOf(run.getNumber()));
       metadata.setBuildStatus(run.getResult().toString());
-      metadata.setOrganization("testorg");
       metadata.setProject(run.getParent().getName());
       BuildDetails details = new BuildDetails();
       SCMDetails.populateSCMDetails(details, getConfigXml(run));

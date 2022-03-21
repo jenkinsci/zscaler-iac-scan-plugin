@@ -57,7 +57,6 @@ public class ZscalerScan extends SimpleBuildWrapper {
       BuildDetails buildDetails = getBuildDetails(build, listener);
       build.addAction(new Report(build));
       if (workspace != null) {
-
         FilePath rootDir = null;
         VirtualChannel channel = launcher.getChannel();
         if (channel != null) {

@@ -1,7 +1,9 @@
 package io.jenkins.plugins.zscaler.scanresults;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ScanResultStats {
     private int total;
 
@@ -24,6 +26,7 @@ public class ScanResultStats {
         this.policyCounts = policyCounts;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public class SeverityCounts {
         @JsonProperty("HIGH")
         private int high;
@@ -33,6 +36,9 @@ public class ScanResultStats {
 
         @JsonProperty("MEDIUM")
         private int medium;
+
+        @JsonProperty("CRITICAL")
+        private int critical;
 
         public int getHigh() {
             return high;
@@ -58,6 +64,13 @@ public class ScanResultStats {
             this.medium = medium;
         }
 
+        public int getCritical() {
+            return critical;
+        }
+
+        public void setCritical(int critical) {
+            this.critical = critical;
+        }
     }
 
 }
