@@ -61,8 +61,6 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
 
   static {
     REGIONTOURLMAP.put("us-prod", Region.US_PROD);
-    REGIONTOURLMAP.put("eu-prod", Region.EU_PROD);
-    REGIONTOURLMAP.put("preview", Region.PREVIEW);
   }
 
   public Configuration() {
