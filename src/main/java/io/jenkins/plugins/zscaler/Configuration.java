@@ -60,7 +60,7 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   private static final Map<String, Region> REGIONTOURLMAP = Maps.newHashMap();
 
   static {
-    REGIONTOURLMAP.put("us-prod", Region.US_PROD);
+    REGIONTOURLMAP.put("US", Region.US);
   }
 
   public Configuration() {
