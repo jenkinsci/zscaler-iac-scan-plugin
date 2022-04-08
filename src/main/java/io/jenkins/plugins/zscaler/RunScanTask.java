@@ -1,5 +1,6 @@
 package io.jenkins.plugins.zscaler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hudson.AbortException;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
@@ -87,11 +88,21 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
         commandList.add(buildDetails.getRepoLoc());
       }
 
+      if(buildDetails.getBranchName()!=null){
+        commandList.add("--branch");
+        commandList.add(buildDetails.getBranchName());
+      }
+
+      if(buildDetails.getCommitSha()!=null){
+        commandList.add("--ref");
+        commandList.add(buildDetails.getCommitSha());
+      }
+
       if(buildDetails.getBuildTriggeredBy() != null){
         commandList.add("--triggered-by");
         commandList.add(buildDetails.getBuildTriggeredBy());
       }
-      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get("scm_type") != null) {
+      if (buildDetails.getAdditionalDetails() != null && buildDetails.getAdditionalDetails().get(BuildDetails.scmType) != null) {
         commandList.add("--repo-type");
         commandList.add(buildDetails.getAdditionalDetails().get("scm_type"));
       }
@@ -99,6 +110,13 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
         commandList.add("--log-level");
         commandList.add(buildDetails.getAdditionalDetails().get("log_level"));
       }
+
+      if(buildDetails.getEventDetails()!=null && buildDetails.getEventDetails().size()>0){
+        ObjectMapper objectMapper = new ObjectMapper();
+        commandList.add("--event-details");
+        commandList.add(objectMapper.writeValueAsString(buildDetails.getEventDetails()));
+      }
+
       if (proxyString != null) {
         commandList.add("--proxy");
         commandList.add(proxyString);
