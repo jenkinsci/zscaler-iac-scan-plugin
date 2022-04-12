@@ -88,7 +88,9 @@ public class Report extends ManagementLink implements RunAction2 {
         metadata.setTime(timeFormatter.format(scannedDate));
       }
       metadata.setBuildNumber(String.valueOf(run.getNumber()));
-      metadata.setBuildStatus(run.getResult().toString());
+      if (run.getResult() != null) {
+        metadata.setBuildStatus(run.getResult().toString());
+      }
       metadata.setProject(run.getParent().getName());
       BuildDetails details = new BuildDetails();
       final EnvVars env = run.getEnvironment(new LogTaskListener(java.util.logging.Logger.getLogger(
