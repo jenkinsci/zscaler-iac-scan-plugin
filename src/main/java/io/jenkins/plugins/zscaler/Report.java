@@ -85,7 +85,7 @@ public class Report extends ManagementLink implements RunAction2 {
         metadata.setTime(timeFormatter.format(scannedDate));
       }
       metadata.setBuildNumber(String.valueOf(run.getNumber()));
-      if(run.getResult()!=null){
+      if (run.getResult() != null) {
         metadata.setBuildStatus(run.getResult().toString());
       }
       metadata.setProject(run.getParent().getName());
