@@ -71,11 +71,11 @@ public class ConfigurationTest {
     PowerMockito.when(authMock.populateAccessToken()).thenReturn("sampletoken");
     PowerMockito.whenNew(ClientCredAuthentication.class).withAnyArguments().thenReturn(authMock);
 
-    FormValidation formValidation = underTest.doValidate("us-prod", "1234", "", "",null);
+    FormValidation formValidation = underTest.doValidate("US", "1234", "", "",null);
     Assert.assertEquals(FormValidation.Kind.OK, formValidation.kind);
 
     Mockito.when(mockCred.getUsername()).thenReturn("errorId");
-    formValidation = underTest.doValidate("us-prod", "1234", "","", null);
+    formValidation = underTest.doValidate("US", "1234", "","", null);
     Assert.assertEquals(FormValidation.Kind.ERROR, formValidation.kind);
   }
 

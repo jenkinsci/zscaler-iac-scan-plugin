@@ -144,7 +144,7 @@ public class ZscannerSetup {
     listener.getLogger().println("Initialising Zscaler IaC scanner");
     String clientId = credentials.getUsername();
     String clientSecret = credentials.getPassword().getPlainText();
-    if ("custom".equals(configuration.getRegion())) {
+    if ("custom".equalsIgnoreCase(configuration.getRegion())) {
       configureScanner(
           configuration.getRegion(), configuration.getApiUrl(), configuration.getAuthUrl());
     }

@@ -1,6 +1,8 @@
 package io.jenkins.plugins.zscaler.models;
 
-public class ScanMetadata {
+import java.io.Serializable;
+
+public class ScanMetadata implements Serializable {
 
     private String date;
 
