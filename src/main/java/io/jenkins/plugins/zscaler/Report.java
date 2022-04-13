@@ -1,9 +1,11 @@
 package io.jenkins.plugins.zscaler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.EnvVars;
 import hudson.model.Job;
 import hudson.model.ManagementLink;
 import hudson.model.Run;
+import hudson.util.LogTaskListener;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
 import io.jenkins.plugins.zscaler.models.ScanMetadata;
 import io.jenkins.plugins.zscaler.scanresults.IacScanResult;
@@ -22,6 +24,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
 
 @ExportedBean
 public class Report extends ManagementLink implements RunAction2 {
@@ -85,11 +88,12 @@ public class Report extends ManagementLink implements RunAction2 {
         metadata.setTime(timeFormatter.format(scannedDate));
       }
       metadata.setBuildNumber(String.valueOf(run.getNumber()));
-      metadata.setBuildStatus(run.getResult().toString());
-      metadata.setOrganization("testorg");
+      metadata.setBuildStatus(String.valueOf(run.getResult()));
       metadata.setProject(run.getParent().getName());
       BuildDetails details = new BuildDetails();
-      SCMDetails.populateSCMDetails(details, getConfigXml(run));
+      final EnvVars env = run.getEnvironment(new LogTaskListener(java.util.logging.Logger.getLogger(
+              this.getClass().getName()), Level.INFO));
+      SCMDetails.populateSCMDetails(env, details);
       if (details.getRepoLoc() != null) {
         metadata.setRepo(details.getRepoLoc());
       }

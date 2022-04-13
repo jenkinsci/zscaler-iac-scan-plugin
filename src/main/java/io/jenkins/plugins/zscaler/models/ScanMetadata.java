@@ -1,6 +1,8 @@
 package io.jenkins.plugins.zscaler.models;
 
-public class ScanMetadata {
+import java.io.Serializable;
+
+public class ScanMetadata implements Serializable {
 
     private String date;
 
@@ -13,8 +15,6 @@ public class ScanMetadata {
     private String buildStatus;
 
     private String project;
-
-    private String organization;
 
     public String getDate() {
         return date;
@@ -62,13 +62,5 @@ public class ScanMetadata {
 
     public void setProject(String project) {
         this.project = project;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
     }
 }

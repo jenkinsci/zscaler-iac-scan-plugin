@@ -7,6 +7,7 @@ import hudson.*;
 import hudson.model.*;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildWrapperDescriptor;
+import hudson.util.LogTaskListener;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
@@ -57,7 +58,6 @@ public class ZscalerScan extends SimpleBuildWrapper {
       BuildDetails buildDetails = getBuildDetails(build, listener);
       build.addAction(new Report(build));
       if (workspace != null) {
-
         FilePath rootDir = null;
         VirtualChannel channel = launcher.getChannel();
         if (channel != null) {
@@ -102,18 +102,19 @@ public class ZscalerScan extends SimpleBuildWrapper {
     }
   }
 
-  private BuildDetails getBuildDetails(Run build, TaskListener listener) {
+  private BuildDetails getBuildDetails(Run build, TaskListener listener) throws IOException, InterruptedException {
+    final EnvVars env = build.getEnvironment(new LogTaskListener(Logger.getLogger(
+            this.getClass().getName()), Level.INFO));
     BuildDetails buildDetails = new BuildDetails();
-    buildDetails.setIntegrationId(Configuration.get().getIntegrationId());
-    buildDetails.setJobName(build.getParent().getDisplayName());
     buildDetails.setBuildNumber(String.valueOf(build.getNumber()));
-    buildDetails.setBuildRunTimestamp(build.getTimestampString2());
-    buildDetails.setSubType(1);
-    buildDetails.setStatus(0);
+    buildDetails.setBuildTriggeredBy(env.get("USER"));
+    buildDetails.addEventDetails("build_url", env.get("BUILD_URL"));
+    buildDetails.addEventDetails("action", build.getDisplayName());
+
     try {
       String configXml = getConfigXml(build);
       if (configXml != null) {
-        SCMDetails.populateSCMDetails(buildDetails, configXml);
+        SCMDetails.populateSCMDetails(env, buildDetails);
 
         JSONObject configJson = XML.toJSONObject(configXml);
         JSONObject project = configJson.optJSONObject("project");
