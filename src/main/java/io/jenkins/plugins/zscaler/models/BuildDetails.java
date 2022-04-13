@@ -8,12 +8,7 @@ import java.util.Map;
 
 public class BuildDetails implements Serializable {
 
-  public static final String jobType = "job_type";
-
   public static final String scmType = "scm_type";
-
-  @JsonProperty("job_name")
-  private String jobName;
 
   @JsonProperty("build_number")
   private String buildNumber;
@@ -21,30 +16,25 @@ public class BuildDetails implements Serializable {
   @JsonProperty("repo_loc")
   private String repoLoc;
 
-  @JsonProperty("build_run_timestamp")
-  private String buildRunTimestamp;
-
   @JsonProperty("build_triggered_by")
   private String buildTriggeredBy;
 
   @JsonProperty("sub_type")
   private int subType;
 
-  @JsonProperty("integration_id")
-  private String integrationId;
-
   private int status;
 
   @JsonProperty("additional_details")
   private Map<String, String> additionalDetails;
+  
+  @JsonProperty("branch")
+  private String branchName;
 
-  public String getJobName() {
-    return jobName;
-  }
+  @JsonProperty("ref")
+  private String commitSha;
 
-  public void setJobName(String jobName) {
-    this.jobName = jobName;
-  }
+  @JsonProperty("event_details")
+  private Map<String, String> eventDetails;
 
   public String getBuildNumber() {
     return buildNumber;
@@ -60,14 +50,6 @@ public class BuildDetails implements Serializable {
 
   public void setRepoLoc(String repoLoc) {
     this.repoLoc = repoLoc;
-  }
-
-  public String getBuildRunTimestamp() {
-    return buildRunTimestamp;
-  }
-
-  public void setBuildRunTimestamp(String buildRunTimestamp) {
-    this.buildRunTimestamp = buildRunTimestamp;
   }
 
   public String getBuildTriggeredBy() {
@@ -94,14 +76,6 @@ public class BuildDetails implements Serializable {
     this.status = status;
   }
 
-  public String getIntegrationId() {
-    return integrationId;
-  }
-
-  public void setIntegrationId(String integrationId) {
-    this.integrationId = integrationId;
-  }
-
   public void addAdditionalDetails(String key, String value) {
     if (additionalDetails == null) {
       additionalDetails = new HashMap<>();
@@ -111,5 +85,30 @@ public class BuildDetails implements Serializable {
 
   public Map<String, String> getAdditionalDetails() {
     return additionalDetails;
+  }
+
+  public String getBranchName() {
+    return branchName;
+  }
+
+  public void addEventDetails(String key, String value){
+    if(eventDetails==null){
+      eventDetails = new HashMap<>();
+    }
+    eventDetails.put(key, value);
+  }
+
+  public Map<String, String> getEventDetails(){ return eventDetails; }
+
+  public void setBranchName(String branchName) {
+    this.branchName = branchName;
+  }
+
+  public String getCommitSha() {
+    return commitSha;
+  }
+
+  public void setCommitSha(String commitSha) {
+    this.commitSha = commitSha;
   }
 }

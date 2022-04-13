@@ -60,7 +60,7 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   private static final Map<String, Region> REGIONTOURLMAP = Maps.newHashMap();
 
   static {
-    REGIONTOURLMAP.put("us-prod", Region.US_PROD);
+    REGIONTOURLMAP.put("US", Region.US);
   }
 
   public Configuration() {
@@ -148,16 +148,19 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
       @QueryParameter("region") String region,
       @QueryParameter("credentialsId") String credentialsId,
       @QueryParameter("apiUrl") String customApiUrl,
-      @QueryParameter("authUrl") String authUrl,
+      @QueryParameter("authUrl") String customAuthUrl,
       @AncestorInPath Job job) {
 
     Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
     String apiUrl;
+    String authUrl;
     if (CUSTOM_REGION.equals(region)) {
       apiUrl = customApiUrl;
+      authUrl = customAuthUrl;
     } else {
       apiUrl = REGIONTOURLMAP.get(region).getApiUrl();
+      authUrl = REGIONTOURLMAP.get(region).getAuthUrl();
     }
     if (apiUrl == null || apiUrl.isEmpty()) {
       return FormValidation.error("Invalid region");
