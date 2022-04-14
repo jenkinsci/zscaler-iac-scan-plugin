@@ -1,6 +1,8 @@
 package io.jenkins.plugins.zscaler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.Extension;
+import hudson.model.Item;
 import hudson.EnvVars;
 import hudson.model.Job;
 import hudson.model.ManagementLink;
@@ -11,6 +13,7 @@ import io.jenkins.plugins.zscaler.models.ScanMetadata;
 import io.jenkins.plugins.zscaler.scanresults.IacScanResult;
 import jenkins.model.RunAction2;
 import org.apache.commons.io.IOUtils;
+import org.kohsuke.stapler.StaplerProxy;
 import org.kohsuke.stapler.export.ExportedBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +29,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 
+@Extension
 @ExportedBean
-public class Report extends ManagementLink implements RunAction2 {
+public class Report extends ManagementLink implements RunAction2, StaplerProxy {
 
   private static final Logger LOG = LoggerFactory.getLogger(Report.class.getName());
   public transient Run<?, ?> run;
@@ -35,6 +39,8 @@ public class Report extends ManagementLink implements RunAction2 {
   public Report(Run<?, ?> run) {
     this.run = run;
   }
+
+  public Report(){}
 
   @Override
   public void onAttached(Run<?, ?> run) {
@@ -48,7 +54,8 @@ public class Report extends ManagementLink implements RunAction2 {
 
   @Override
   public String getIconFileName() {
-    return "/plugin/zscaler-iac-scan/images/icon.png";
+    return this.run.hasPermission(Item.CONFIGURE) ? "/plugin/zscaler-iac-scan/images/icon.png" : null;
+
   }
 
   @Override
@@ -172,5 +179,11 @@ public class Report extends ManagementLink implements RunAction2 {
       }
     }
     return null;
+  }
+
+  @Override
+  public Object getTarget() {
+    this.run.hasPermission(Item.CONFIGURE);
+    return this;
   }
 }
