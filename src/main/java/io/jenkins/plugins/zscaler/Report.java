@@ -136,6 +136,9 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
     return null;
   }
 
+  private String getReportUrl(){
+    return Configuration.get().getReportUrl();
+  }
   private IacScanResult getBuildResults() {
     Path resultFilePath = null;
     try {

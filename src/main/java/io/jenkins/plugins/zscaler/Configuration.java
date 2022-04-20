@@ -57,6 +57,7 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   private String IntegrationId;
   private String apiUrl;
   private String authUrl;
+  private String reportUrl;
   private static final Map<String, Region> REGIONTOURLMAP = Maps.newHashMap();
 
   static {
@@ -125,6 +126,20 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
   public void setIntegrationId(String integrationId) {
     IntegrationId = integrationId;
     save();
+  }
+
+  public String getReportUrl() {
+    if (region == null) {
+      return null;
+    }
+    if (CUSTOM_REGION.equals(region)) {
+      return reportUrl;
+    }
+    return REGIONTOURLMAP.get(region).getReportUrl();
+  }
+
+  public void setReportUrl(String reportUrl) {
+    this.reportUrl = reportUrl;
   }
 
   @SuppressWarnings("unused")
