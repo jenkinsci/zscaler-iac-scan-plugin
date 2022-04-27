@@ -8,7 +8,7 @@ public class SCMDetails {
   public static void populateSCMDetails(EnvVars env, BuildDetails buildDetails){
     String gitUrl = env.get(SCMConstants.GitUrl);
     if (gitUrl != null) {
-      buildDetails.setRepoLoc(gitUrl);
+      buildDetails.setRepoLoc(gitUrl.substring(0,gitUrl.length()-4));
       buildDetails.addAdditionalDetails(BuildDetails.scmType, gitUrl.contains("gitlab.com") ? SCMConstants.GITLAB : (gitUrl.contains("github.com") ? SCMConstants.GITHUB : "GIT"));
       buildDetails.setBranchName(env.get(SCMConstants.GitBranch));
       buildDetails.setCommitSha(env.get(SCMConstants.GitCommit));
