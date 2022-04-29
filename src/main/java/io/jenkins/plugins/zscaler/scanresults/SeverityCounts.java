@@ -49,4 +49,3 @@ public class SeverityCounts {
         this.critical = critical;
     }
 }
-
