@@ -133,7 +133,7 @@ public class Configuration extends GlobalConfiguration implements Serializable, 
       return null;
     }
     if (CUSTOM_REGION.equals(region)) {
-      return reportUrl;
+      return reportUrl != null ? reportUrl : Region.US.getReportUrl();
     }
     return REGIONTOURLMAP.get(region).getReportUrl();
   }

@@ -1,7 +1,7 @@
 package io.jenkins.plugins.zscaler.models;
 
 public enum Region {
-  US("US", "https://api.zcpcloud.net", "https://auth.us.zcpcloud.net", "http://dev.iacplugin.zscwp.io");
+  US("US", "https://api.zcpcloud.net", "https://auth.us.zcpcloud.net", "https://iacplugin.zcpcloud.net");
 
   private final String name;
   private final String apiUrl;
@@ -28,6 +28,6 @@ public enum Region {
   }
 
   public String getReportUrl() {
-    return reportUrl != null ? reportUrl : US.reportUrl;
+    return reportUrl;
   }
 }

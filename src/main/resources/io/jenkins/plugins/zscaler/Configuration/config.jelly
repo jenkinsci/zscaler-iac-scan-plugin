@@ -36,6 +36,6 @@
         </f:entry>
         <f:validateButton
                 title="${%validate}" progress="${%validation in progress...}"
-                method="validate" with="region,credentialsId,apiUrl,authUrl,reportUrl"/>
+                method="validate" with="region,credentialsId,apiUrl,authUrl"/>
     </f:section>
 </j:jelly>
