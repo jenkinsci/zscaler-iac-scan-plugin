@@ -8,7 +8,7 @@
         <l:main-panel>
             <script>
                 function resizeIframe(obj) {
-                    obj.contentWindow.postMessage(${it.results}, 'https://iac.d36x9y7bfwazbd.amplifyapp.com/');
+                    obj.contentWindow.postMessage(${it.results}, ${it.reportUrl});
                 }
             </script>
 
@@ -17,7 +17,7 @@
                     data-crumbtoken="${it.crumbToken}"
                     style="border: none;min-width: 800px; height: 100%"
                     id="iac-plugin-container"
-                    width="100%" src="https://iac.d36x9y7bfwazbd.amplifyapp.com"
+                    width="100%" src="${it.reportUrl}"
                     onload="resizeIframe(this)"
             />
         </l:main-panel>

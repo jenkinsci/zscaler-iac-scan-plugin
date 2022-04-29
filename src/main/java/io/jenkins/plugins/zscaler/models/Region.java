@@ -1,16 +1,18 @@
 package io.jenkins.plugins.zscaler.models;
 
 public enum Region {
-  US("US", "https://api.zcpcloud.net", "https://auth.us.zcpcloud.net");
+  US("US", "https://api.zcpcloud.net", "https://auth.us.zcpcloud.net", "https://iacplugin.zcpcloud.net");
 
   private final String name;
   private final String apiUrl;
   private final String authUrl;
+  private final String reportUrl;
 
-  Region(String name, String apiUrl, String authUrl) {
+  Region(String name, String apiUrl, String authUrl, String reportUrl) {
     this.name = name;
     this.apiUrl = apiUrl;
     this.authUrl = authUrl;
+    this.reportUrl = reportUrl;
   }
 
   public String getName() {
@@ -23,5 +25,9 @@ public enum Region {
 
   public String getAuthUrl() {
     return authUrl;
+  }
+
+  public String getReportUrl() {
+    return reportUrl;
   }
 }
