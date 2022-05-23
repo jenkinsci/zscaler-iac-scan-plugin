@@ -1,7 +1,7 @@
 package io.jenkins.plugins.zscaler.models;
 
 public enum Region {
-  US("US", "https://api.zcpcloud.net", "https://auth.us.zcpcloud.net", "https://iacplugin.zcpcloud.net");
+  US("US", "https://api.zpccloud.net", "https://auth.us.zpccloud.net", "https://iacplugin.zpccloud.net");
 
   private final String name;
   private final String apiUrl;
