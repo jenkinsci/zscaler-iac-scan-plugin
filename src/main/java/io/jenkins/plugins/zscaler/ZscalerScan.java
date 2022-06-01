@@ -96,9 +96,6 @@ public class ZscalerScan extends SimpleBuildWrapper {
                           buildDetails, filePath, dirPath));
           File buildDir = build.getParent().getBuildDir();
           postResultsToWorkspace(results, buildDir.getAbsolutePath(), build.getNumber());
-          if(failBuild == null) {
-            failBuild = true;
-          }
           validateAndFailBuild(results, listener);
         }
       }
@@ -225,6 +222,9 @@ public class ZscalerScan extends SimpleBuildWrapper {
   }
 
   public Boolean isFailBuild() {
+    if(failBuild == null) {
+      failBuild = true;
+    }
     return failBuild;
   }
 
