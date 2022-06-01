@@ -29,6 +29,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
   ProxyConfiguration proxyConfiguration;
   BuildDetails buildDetails;
   String filePath;
+  String dirPath;
   private static final Logger LOGGER = Logger.getLogger(RunScanTask.class.getName());
   public RunScanTask(
       TaskListener listener,
@@ -36,7 +37,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       Configuration configuration,
       String binaryLoc,
       ProxyConfiguration proxyConfiguration,
-      BuildDetails buildDetails, String filePath) {
+      BuildDetails buildDetails, String filePath, String dirPath) {
     this.listener = listener;
     this.workspace = workspace;
     this.configuration = configuration;
@@ -44,6 +45,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
     this.proxyConfiguration = proxyConfiguration;
     this.buildDetails = buildDetails;
     this.filePath = filePath;
+    this.dirPath = dirPath;
   }
 
   @Override
@@ -86,6 +88,9 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       if(StringUtils.isNotEmpty(filePath)) {
         commandList.add("-f");
         commandList.add(filePath);
+      } else if (StringUtils.isNotEmpty(dirPath)){
+        commandList.add("-d");
+        commandList.add(dirPath);
       } else {
         commandList.add("-d");
         commandList.add(workspace);
