@@ -28,7 +28,7 @@ public class ZscalerScanTest {
 
   @BeforeClass
   public static void setUp() {
-    underTest = new ZscalerScan(false);
+    underTest = new ZscalerScan(false, "");
   }
 
   @Test

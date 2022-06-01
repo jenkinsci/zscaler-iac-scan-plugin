@@ -39,9 +39,12 @@ public class ZscalerScan extends SimpleBuildWrapper {
 
   private String logLevel;
 
+  private String filePath;
+
   @DataBoundConstructor
-  public ZscalerScan(boolean failBuild) {
+  public ZscalerScan(boolean failBuild, String filePath) {
     this.failBuild = failBuild;
+    this.filePath = filePath;
   }
 
   @Override
@@ -89,7 +92,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
                           Configuration.get(),
                           rootDir.toURI().getPath(),
                           proxy,
-                          buildDetails));
+                          buildDetails, filePath));
           File buildDir = build.getParent().getBuildDir();
           postResultsToWorkspace(results, buildDir.getAbsolutePath(), build.getNumber());
           validateAndFailBuild(results, listener);
