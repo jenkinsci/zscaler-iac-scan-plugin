@@ -35,12 +35,16 @@ public class ZscalerScan extends SimpleBuildWrapper {
 
   private static final Logger LOGGER = Logger.getLogger(ZscalerScan.class.getName());
 
-  private boolean failBuild;
+  private Boolean failBuild;
 
   private String logLevel;
 
+  private String filePath;
+
+  private String dirPath;
+
   @DataBoundConstructor
-  public ZscalerScan(boolean failBuild) {
+  public ZscalerScan(Boolean failBuild) {
     this.failBuild = failBuild;
   }
 
@@ -89,7 +93,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
                           Configuration.get(),
                           rootDir.toURI().getPath(),
                           proxy,
-                          buildDetails));
+                          buildDetails, filePath, dirPath));
           File buildDir = build.getParent().getBuildDir();
           postResultsToWorkspace(results, buildDir.getAbsolutePath(), build.getNumber());
           validateAndFailBuild(results, listener);
@@ -217,12 +221,15 @@ public class ZscalerScan extends SimpleBuildWrapper {
     return null;
   }
 
-  public boolean isFailBuild() {
+  public Boolean isFailBuild() {
+    if(failBuild == null) {
+      failBuild = true;
+    }
     return failBuild;
   }
 
   @DataBoundSetter
-  public void setFailBuild(boolean failBuild) {
+  public void setFailBuild(Boolean failBuild) {
     this.failBuild = failBuild;
   }
 
@@ -233,6 +240,16 @@ public class ZscalerScan extends SimpleBuildWrapper {
   @DataBoundSetter
   public void setLogLevel(String logLevel) {
     this.logLevel = logLevel;
+  }
+
+  @DataBoundSetter
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
+  }
+
+  @DataBoundSetter
+  public void setDirPath(String dirPath) {
+    this.dirPath = dirPath;
   }
 
   @Extension

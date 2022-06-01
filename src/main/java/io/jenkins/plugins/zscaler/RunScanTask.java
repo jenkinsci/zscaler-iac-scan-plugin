@@ -28,6 +28,8 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
   String binaryLoc;
   ProxyConfiguration proxyConfiguration;
   BuildDetails buildDetails;
+  String filePath;
+  String dirPath;
   private static final Logger LOGGER = Logger.getLogger(RunScanTask.class.getName());
   public RunScanTask(
       TaskListener listener,
@@ -35,13 +37,15 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       Configuration configuration,
       String binaryLoc,
       ProxyConfiguration proxyConfiguration,
-      BuildDetails buildDetails) {
+      BuildDetails buildDetails, String filePath, String dirPath) {
     this.listener = listener;
     this.workspace = workspace;
     this.configuration = configuration;
     this.binaryLoc = binaryLoc;
     this.proxyConfiguration = proxyConfiguration;
     this.buildDetails = buildDetails;
+    this.filePath = filePath;
+    this.dirPath = dirPath;
   }
 
   @Override
@@ -69,8 +73,6 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               "json",
               "-m",
               "cicd",
-              "-d",
-              workspace,
               "--sub-type",
               "JENKINS",
               "--event-type",
@@ -83,6 +85,16 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       List<String> commandList = new ArrayList<>();
       commandList.addAll(commandPrefix);
 
+      if(StringUtils.isNotEmpty(filePath)) {
+        commandList.add("-f");
+        commandList.add(filePath);
+      } else if (StringUtils.isNotEmpty(dirPath)){
+        commandList.add("-d");
+        commandList.add(dirPath);
+      } else {
+        commandList.add("-d");
+        commandList.add(workspace);
+      }
       if (buildDetails.getRepoLoc() != null) {
         commandList.add("--repo");
         commandList.add(buildDetails.getRepoLoc());
