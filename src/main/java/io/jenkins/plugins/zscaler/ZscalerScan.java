@@ -50,6 +50,17 @@ public class ZscalerScan extends SimpleBuildWrapper {
     this.dirPath = dirPath;
   }
 
+  @DataBoundConstructor
+  public ZscalerScan(boolean failBuild, String filePath) {
+    this.failBuild = failBuild;
+    this.filePath = filePath;
+  }
+
+  @DataBoundConstructor
+  public ZscalerScan(boolean failBuild) {
+    this.failBuild = failBuild;
+  }
+
   @Override
   public void setUp(
       Context context,
