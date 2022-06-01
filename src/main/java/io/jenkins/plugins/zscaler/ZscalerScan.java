@@ -35,7 +35,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
 
   private static final Logger LOGGER = Logger.getLogger(ZscalerScan.class.getName());
 
-  private boolean failBuild;
+  private Boolean failBuild;
 
   private String logLevel;
 
@@ -44,20 +44,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
   private String dirPath;
 
   @DataBoundConstructor
-  public ZscalerScan(boolean failBuild, String filePath, String dirPath) {
-    this.failBuild = failBuild;
-    this.filePath = filePath;
-    this.dirPath = dirPath;
-  }
-
-  @DataBoundConstructor
-  public ZscalerScan(boolean failBuild, String filePath) {
-    this.failBuild = failBuild;
-    this.filePath = filePath;
-  }
-
-  @DataBoundConstructor
-  public ZscalerScan(boolean failBuild) {
+  public ZscalerScan(Boolean failBuild) {
     this.failBuild = failBuild;
   }
 
@@ -109,6 +96,9 @@ public class ZscalerScan extends SimpleBuildWrapper {
                           buildDetails, filePath, dirPath));
           File buildDir = build.getParent().getBuildDir();
           postResultsToWorkspace(results, buildDir.getAbsolutePath(), build.getNumber());
+          if(failBuild == null) {
+            failBuild = true;
+          }
           validateAndFailBuild(results, listener);
         }
       }
@@ -234,12 +224,12 @@ public class ZscalerScan extends SimpleBuildWrapper {
     return null;
   }
 
-  public boolean isFailBuild() {
+  public Boolean isFailBuild() {
     return failBuild;
   }
 
   @DataBoundSetter
-  public void setFailBuild(boolean failBuild) {
+  public void setFailBuild(Boolean failBuild) {
     this.failBuild = failBuild;
   }
 
@@ -250,6 +240,16 @@ public class ZscalerScan extends SimpleBuildWrapper {
   @DataBoundSetter
   public void setLogLevel(String logLevel) {
     this.logLevel = logLevel;
+  }
+
+  @DataBoundSetter
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
+  }
+
+  @DataBoundSetter
+  public void setDirPath(String dirPath) {
+    this.dirPath = dirPath;
   }
 
   @Extension
