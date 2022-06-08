@@ -252,6 +252,14 @@ public class ZscalerScan extends SimpleBuildWrapper {
     this.dirPath = dirPath;
   }
 
+  public String getFilePath() {
+    return filePath;
+  }
+
+  public String getDirPath() {
+    return dirPath;
+  }
+
   @Extension
   public static class DescriptorImpl extends BuildWrapperDescriptor {
 
