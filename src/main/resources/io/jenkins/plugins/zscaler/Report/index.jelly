@@ -8,7 +8,7 @@
         <l:main-panel>
             <script>
                 function resizeIframe(obj) {
-                    obj.contentWindow.postMessage(${it.results},'${it.reportUrl}');
+                    obj.contentWindow.postMessage(${it.results}, '${it.reportUrl}');
                 }
             </script>
 
