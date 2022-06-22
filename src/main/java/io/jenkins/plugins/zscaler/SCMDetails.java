@@ -4,7 +4,13 @@ import hudson.EnvVars;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
 import io.jenkins.plugins.zscaler.models.SCMConstants;
 
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class SCMDetails {
+
+  private static final Logger LOGGER = Logger.getLogger(SCMDetails.class.getName());
   public static void populateSCMDetails(EnvVars env, BuildDetails buildDetails){
     String gitUrl = env.get(SCMConstants.GitUrl);
     if (gitUrl != null) {
@@ -14,9 +20,13 @@ public class SCMDetails {
       buildDetails.setBranchName(env.get(SCMConstants.GitBranch));
       buildDetails.setCommitSha(env.get(SCMConstants.GitCommit));
       if (gitUrl.contains("gitlab.com") || gitUrl.contains("github.com")) {
-        String repoFullName = gitUrl.substring(19,gitUrl.length()-4);
-        buildDetails.addRepoDetails(SCMConstants.RepoFullName, repoFullName);
-        buildDetails.addRepoDetails(SCMConstants.RepoName, repoFullName.split("/")[1]);
+        try {
+          String repoFullName = new URL(repoUrl).getPath().replaceFirst("/","");
+          buildDetails.addRepoDetails(SCMConstants.RepoFullName, repoFullName);
+          buildDetails.addRepoDetails(SCMConstants.RepoName, repoFullName.split("/")[1]);
+        } catch (Exception e){
+          LOGGER.log(Level.SEVERE, "Unable to fetch the path for repo url ::" + repoUrl);
+        }
         buildDetails.addRepoDetails(SCMConstants.RepoUrl, repoUrl);
       }
     }
