@@ -36,6 +36,9 @@ public class BuildDetails implements Serializable {
   @JsonProperty("event_details")
   private Map<String, String> eventDetails;
 
+  @JsonProperty("repo-details")
+  private Map<String, String> repoDetails;
+
   public String getBuildNumber() {
     return buildNumber;
   }
@@ -111,4 +114,13 @@ public class BuildDetails implements Serializable {
   public void setCommitSha(String commitSha) {
     this.commitSha = commitSha;
   }
+
+  public void addRepoDetails(String key, String value){
+    if(repoDetails==null){
+      repoDetails = new HashMap<>();
+    }
+    repoDetails.put(key, value);
+  }
+
+  public Map<String, String> getRepoDetails(){ return repoDetails; }
 }

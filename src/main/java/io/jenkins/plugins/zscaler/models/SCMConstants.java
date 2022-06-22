@@ -16,5 +16,7 @@ public class SCMConstants {
 
     public static final String SvnUrl = "SVN_URL";
 
-    public static final String SvnRevision ="SVN_REVISION";
+    public static final String SvnRevision = "SVN_REVISION";
+
+    public static final String RepoName = "full_name";
 }
