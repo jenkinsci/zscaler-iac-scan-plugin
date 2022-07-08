@@ -53,13 +53,26 @@ public class SCMDetails {
     https://<token>@github/<username>/<repo>
     or
     https://oauth2:<token>@gitlab/<groupname>/<repo>
-    then, find the index of '@' and first '/'.
-    Then replace the string between 'https://' and '@' with mask string
+    then, find the index of '@'.
+    Then replace the authority of the URL with masked string
      */
-    int index = repoUrl.indexOf("@");
-    if (index > 0) {
-      int firstSlashIndex = repoUrl.indexOf("/");
-      repoUrl = StringUtils.replace(repoUrl, repoUrl.substring(firstSlashIndex + 2, index), MASK_STRING);
+    try {
+      URL url = new URL(repoUrl);
+      String path = url.getPath();
+      String authority = url.getAuthority();
+      String protocol = url.getProtocol();
+      int index = authority.indexOf("@");
+      if(index > 0) {
+        authority = StringUtils.replace(authority, authority.substring(0, index), MASK_STRING);
+        StringBuilder result = new StringBuilder();
+        result.append(protocol).append("://").append(authority).append(path);
+        return result.toString();
+      } else {
+        LOGGER.log(Level.INFO, new StringBuilder("Repo URL:").append(repoUrl).append(" doesn't have access token").toString());
+      }
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, new StringBuilder("Unable to mask access token for the repo URL: ").append(repoUrl).toString());
+      e.printStackTrace();
     }
     return repoUrl;
   }
