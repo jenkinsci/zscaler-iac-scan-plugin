@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 public class SCMDetails {
 
   private static final Logger LOGGER = Logger.getLogger(SCMDetails.class.getName());
-  private static final String MASK_STRING = "xxxxx";
   public static void populateSCMDetails(EnvVars env, BuildDetails buildDetails){
     String gitUrl = env.get(SCMConstants.GitUrl);
     if (gitUrl != null) {
@@ -50,28 +49,24 @@ public class SCMDetails {
   private static String maskAccessToken(String repoUrl) {
     /*
     If the repo URl is either of the following formats:
-    https://<token>@github/<username>/<repo>
+    https://<token>@github.com/<username>/<repo>
     or
     https://oauth2:<token>@gitlab/<groupname>/<repo>
-    then, find the index of '@'.
-    Then replace the authority of the URL with masked string
+    then, convert it to the form:
+    https://github.com/<username>/<repo>
+    or
+    https://gitlab.com/<groupname>/<repo>
      */
     try {
       URL url = new URL(repoUrl);
       String path = url.getPath();
-      String authority = url.getAuthority();
+      String host = url.getHost();
       String protocol = url.getProtocol();
-      int index = authority.indexOf("@");
-      if(index > 0) {
-        authority = StringUtils.replace(authority, authority.substring(0, index), MASK_STRING);
-        StringBuilder result = new StringBuilder();
-        result.append(protocol).append("://").append(authority).append(path);
-        return result.toString();
-      } else {
-        LOGGER.log(Level.INFO, new StringBuilder("Repo URL:").append(repoUrl).append(" doesn't have access token").toString());
-      }
+      StringBuilder result = new StringBuilder();
+      result.append(protocol).append("://").append(host).append(path);
+      return result.toString();
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, new StringBuilder("Unable to mask access token for the repo URL: ").append(repoUrl).toString());
+      LOGGER.log(Level.SEVERE, new StringBuilder("Unable to remove access token for the repo URL: ").append(repoUrl).toString());
       e.printStackTrace();
     }
     return repoUrl;
