@@ -75,6 +75,17 @@ public class ZscannerSetup {
     }
     try {
       initScanner();
+      if(doesZscannerExists){
+        try{
+          checkAndUpdateBinary(zscanner);
+          Files.setPosixFilePermissions(
+                  zscanner,
+                  Sets.newHashSet(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_EXECUTE));
+        } catch (IOException e) {
+          LOGGER.log(Level.ERROR, "Failed to update the current scanner", e);
+          throw new AbortException("Failed to update the current scanner");
+        }
+      }
     } catch (IOException e) {
       LOGGER.log(Level.ERROR, "Failed to initialise the scanner", e);
       throw new AbortException("Failed to initialise the scanner");
@@ -269,5 +280,32 @@ public class ZscannerSetup {
   public static void cleanup(String binaryLoc) throws IOException {
     ProcessBuilder process = new ProcessBuilder();
     process.command("./zscanner", "logout","-m","cicd").directory(new File(binaryLoc)).start();
+  }
+
+  private void checkAndUpdateBinary(Path binaryPath) throws IOException {
+    ProcessBuilder processBuilder = new ProcessBuilder();
+    String proxyString = ClientUtils.getProxyConfigString(proxy);
+    String[] command = {
+            "./zscanner",
+            "update",
+            "-m",
+            "cicd"
+    };
+    if (proxyString != null) {
+      ArrayUtils.add(command, "--proxy");
+      ArrayUtils.add(command, proxyString);
+    }
+    LOGGER.log(Level.INFO,"Update Command:: " + ArrayUtils.toString(command));
+    Process exec = processBuilder.command(command).directory(new File(binaryLoc)).start();
+
+    try (InputStream errorStream = exec.getErrorStream();
+         InputStream resultStream = exec.getInputStream()) {
+      if (errorStream.available() > 0) {
+        LOGGER.log(Level.INFO, "Error during update");
+        listener.getLogger().println(IOUtils.toString(errorStream, Charset.defaultCharset()));
+      }
+      listener.getLogger().println(IOUtils.toString(resultStream, Charset.defaultCharset()));
+      exec.destroy();
+    }
   }
 }
