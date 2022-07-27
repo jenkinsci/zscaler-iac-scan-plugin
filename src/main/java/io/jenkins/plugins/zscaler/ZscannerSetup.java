@@ -304,7 +304,6 @@ public class ZscannerSetup {
         LOGGER.log(Level.INFO, "Error during update");
         listener.getLogger().println(IOUtils.toString(errorStream, Charset.defaultCharset()));
       }
-      listener.getLogger().println(binaryPath);
       listener.getLogger().println(IOUtils.toString(resultStream, Charset.defaultCharset()));
       exec.destroy();
     }
