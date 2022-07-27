@@ -289,9 +289,7 @@ public class ZscannerSetup {
             "./zscanner",
             "update",
             "-m",
-            "cicd",
-            "-l",
-            "debug"
+            "cicd"
     };
     if (proxyString != null) {
       ArrayUtils.add(command, "--proxy");
