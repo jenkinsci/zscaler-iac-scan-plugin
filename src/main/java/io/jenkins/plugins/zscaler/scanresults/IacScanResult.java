@@ -12,15 +12,15 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IacScanResult {
 
-  @JsonProperty("passed_policies")
+  @JsonProperty("passed_findings")
   @Nullable
   private List<PolicyResult> passed;
 
-  @JsonProperty("failed_policies")
+  @JsonProperty("failed_findings")
   @Nullable
   private List<PolicyResult> failed;
 
-  @JsonProperty("skipped_policies")
+  @JsonProperty("skipped_findings")
   @Nullable
   private List<PolicyResult> skipped;
 
