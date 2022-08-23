@@ -40,6 +40,9 @@ public class ScanSummary {
     @JsonProperty("skipped_policies")
     private ScanResultStats skippedPolicies;
 
+    @JsonProperty("passed_policies")
+    private ScanResultStats passedPolicies;
+
     public String getFileOrFolder() {
         return fileOrFolder;
     }
@@ -128,6 +131,14 @@ public class ScanSummary {
         this.skippedPolicies = skippedPolicies;
     }
 
+    public ScanResultStats getPassedPolicies() {
+        return passedPolicies;
+    }
+
+    public void setPassedPolicies(ScanResultStats passedPolicies) {
+        this.passedPolicies = passedPolicies;
+    }
+
     @Override
     public String toString() {
         return "ScanSummary{" +
@@ -142,6 +153,7 @@ public class ScanSummary {
                 ", skippedFindings=" + skippedFindings +
                 ", failedPolicies=" + failedPolicies +
                 ", skippedPolicies=" + skippedPolicies +
+                ", passedPolicies=" + passedPolicies +
                 '}';
     }
 }
