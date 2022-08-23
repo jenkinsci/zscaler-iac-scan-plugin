@@ -24,6 +24,10 @@ public class IacScanResult {
   @Nullable
   private List<PolicyResult> skipped;
 
+  @JsonProperty("passed_policies")
+  @Nullable
+  private List<PolicyResult> passedPolicies;
+
   @JsonProperty("failed_policies")
   @Nullable
   private List<PolicyResult> failedPolicies;
@@ -94,5 +98,14 @@ public class IacScanResult {
 
   public void setSkippedPolicies(@Nullable List<PolicyResult> skippedPolicies) {
     this.skippedPolicies = skippedPolicies;
+  }
+
+  @Nullable
+  public List<PolicyResult> getPassedPolicies() {
+    return passedPolicies;
+  }
+
+  public void setPassedPolicies(@Nullable List<PolicyResult> passedPolicies) {
+    this.passedPolicies = passedPolicies;
   }
 }
