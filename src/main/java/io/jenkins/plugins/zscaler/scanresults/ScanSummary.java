@@ -34,6 +34,12 @@ public class ScanSummary {
     @JsonProperty("skipped_findings")
     private ScanResultStats skippedFindings;
 
+    @JsonProperty("failed_policies")
+    private ScanResultStats failedPolicies;
+
+    @JsonProperty("skipped_policies")
+    private ScanResultStats skippedPolicies;
+
     public String getFileOrFolder() {
         return fileOrFolder;
     }
@@ -90,6 +96,38 @@ public class ScanSummary {
         this.statusDescription = statusDescription;
     }
 
+    public ScanResultStats getFailedFindings() {
+        return failedFindings;
+    }
+
+    public void setFailedFindings(ScanResultStats failedFindings) {
+        this.failedFindings = failedFindings;
+    }
+
+    public ScanResultStats getSkippedFindings() {
+        return skippedFindings;
+    }
+
+    public void setSkippedFindings(ScanResultStats skippedFindings) {
+        this.skippedFindings = skippedFindings;
+    }
+
+    public ScanResultStats getFailedPolicies() {
+        return failedPolicies;
+    }
+
+    public void setFailedPolicies(ScanResultStats failedPolicies) {
+        this.failedPolicies = failedPolicies;
+    }
+
+    public ScanResultStats getSkippedPolicies() {
+        return skippedPolicies;
+    }
+
+    public void setSkippedPolicies(ScanResultStats skippedPolicies) {
+        this.skippedPolicies = skippedPolicies;
+    }
+
     @Override
     public String toString() {
         return "ScanSummary{" +
@@ -102,6 +140,8 @@ public class ScanSummary {
                 ", passedFindings=" + passedFindings +
                 ", failedFindings=" + failedFindings +
                 ", skippedFindings=" + skippedFindings +
+                ", failedPolicies=" + failedPolicies +
+                ", skippedPolicies=" + skippedPolicies +
                 '}';
     }
 }

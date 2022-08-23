@@ -24,6 +24,14 @@ public class IacScanResult {
   @Nullable
   private List<PolicyResult> skipped;
 
+  @JsonProperty("failed_policies")
+  @Nullable
+  private List<PolicyResult> failedPolicies;
+
+  @JsonProperty("skipped_policies")
+  @Nullable
+  private List<PolicyResult> skippedPolicies;
+
   @JsonProperty("summary")
   private ScanSummary scanSummary;
 
@@ -68,5 +76,23 @@ public class IacScanResult {
 
   public void setMetadata(ScanMetadata metadata) {
     this.metadata = metadata;
+  }
+
+  @Nullable
+  public List<PolicyResult> getFailedPolicies() {
+    return failedPolicies;
+  }
+
+  public void setFailedPolicies(@Nullable List<PolicyResult> failedPolicies) {
+    this.failedPolicies = failedPolicies;
+  }
+
+  @Nullable
+  public List<PolicyResult> getSkippedPolicies() {
+    return skippedPolicies;
+  }
+
+  public void setSkippedPolicies(@Nullable List<PolicyResult> skippedPolicies) {
+    this.skippedPolicies = skippedPolicies;
   }
 }
