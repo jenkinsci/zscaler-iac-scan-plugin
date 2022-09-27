@@ -17,6 +17,7 @@
         <f:entry title="Choose Environment" field="region">
             <select name="region" onchange='CheckRegion(this.value);'>
                 <option value="US">US</option>
+                <option value="EU">EU</option>
                 <option value="custom">CUSTOM</option>
             </select>
         </f:entry>
