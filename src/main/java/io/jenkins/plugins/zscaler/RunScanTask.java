@@ -79,6 +79,8 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
               "BUILD",
               "--event-id",
               buildDetails.getBuildNumber(),
+              "--json-format-version",
+              "v2"
       };
 
       List<String> commandPrefix = Arrays.asList(command);
