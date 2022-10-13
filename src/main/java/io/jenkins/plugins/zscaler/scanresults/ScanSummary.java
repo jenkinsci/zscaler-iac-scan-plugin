@@ -25,14 +25,23 @@ public class ScanSummary {
     @JsonProperty("total_policies")
     private int totalPolicies;
 
-    @JsonProperty("passed_policies")
-    private int passedPolicies;
+    @JsonProperty("passed_findings")
+    private int passedFindings;
+
+    @JsonProperty("failed_findings")
+    private ScanResultStats failedFindings;
+
+    @JsonProperty("skipped_findings")
+    private ScanResultStats skippedFindings;
 
     @JsonProperty("failed_policies")
     private ScanResultStats failedPolicies;
 
     @JsonProperty("skipped_policies")
     private ScanResultStats skippedPolicies;
+
+    @JsonProperty("passed_policies")
+    private ScanResultStats passedPolicies;
 
     public String getFileOrFolder() {
         return fileOrFolder;
@@ -74,12 +83,12 @@ public class ScanSummary {
         this.totalPolicies = totalPolicies;
     }
 
-    public int getPassedPolicies() {
-        return passedPolicies;
+    public int getPassedFindings() {
+        return passedFindings;
     }
 
-    public void setPassedPolicies(int passedPolicies) {
-        this.passedPolicies = passedPolicies;
+    public void setPassedFindings(int passedFindings) {
+        this.passedFindings = passedFindings;
     }
 
     public String getStatusDescription() {
@@ -88,6 +97,46 @@ public class ScanSummary {
 
     public void setStatusDescription(String statusDescription) {
         this.statusDescription = statusDescription;
+    }
+
+    public ScanResultStats getFailedFindings() {
+        return failedFindings;
+    }
+
+    public void setFailedFindings(ScanResultStats failedFindings) {
+        this.failedFindings = failedFindings;
+    }
+
+    public ScanResultStats getSkippedFindings() {
+        return skippedFindings;
+    }
+
+    public void setSkippedFindings(ScanResultStats skippedFindings) {
+        this.skippedFindings = skippedFindings;
+    }
+
+    public ScanResultStats getFailedPolicies() {
+        return failedPolicies;
+    }
+
+    public void setFailedPolicies(ScanResultStats failedPolicies) {
+        this.failedPolicies = failedPolicies;
+    }
+
+    public ScanResultStats getSkippedPolicies() {
+        return skippedPolicies;
+    }
+
+    public void setSkippedPolicies(ScanResultStats skippedPolicies) {
+        this.skippedPolicies = skippedPolicies;
+    }
+
+    public ScanResultStats getPassedPolicies() {
+        return passedPolicies;
+    }
+
+    public void setPassedPolicies(ScanResultStats passedPolicies) {
+        this.passedPolicies = passedPolicies;
     }
 
     @Override
@@ -99,9 +148,12 @@ public class ScanSummary {
                 ", scannedAt='" + scannedAt + '\'' +
                 ", iacType=" + iacType +
                 ", totalPolicies=" + totalPolicies +
-                ", passedPolicies=" + passedPolicies +
+                ", passedFindings=" + passedFindings +
+                ", failedFindings=" + failedFindings +
+                ", skippedFindings=" + skippedFindings +
                 ", failedPolicies=" + failedPolicies +
                 ", skippedPolicies=" + skippedPolicies +
+                ", passedPolicies=" + passedPolicies +
                 '}';
     }
 }

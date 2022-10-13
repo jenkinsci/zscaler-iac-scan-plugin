@@ -12,17 +12,29 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IacScanResult {
 
-  @JsonProperty("passed_policies")
+  @JsonProperty("passed_findings")
   @Nullable
   private List<PolicyResult> passed;
 
-  @JsonProperty("failed_policies")
+  @JsonProperty("failed_findings")
   @Nullable
   private List<PolicyResult> failed;
 
-  @JsonProperty("skipped_policies")
+  @JsonProperty("skipped_findings")
   @Nullable
   private List<PolicyResult> skipped;
+
+  @JsonProperty("passed_policies")
+  @Nullable
+  private List<PolicyResult> passedPolicies;
+
+  @JsonProperty("failed_policies")
+  @Nullable
+  private List<PolicyResult> failedPolicies;
+
+  @JsonProperty("skipped_policies")
+  @Nullable
+  private List<PolicyResult> skippedPolicies;
 
   @JsonProperty("summary")
   private ScanSummary scanSummary;
@@ -68,5 +80,32 @@ public class IacScanResult {
 
   public void setMetadata(ScanMetadata metadata) {
     this.metadata = metadata;
+  }
+
+  @Nullable
+  public List<PolicyResult> getFailedPolicies() {
+    return failedPolicies;
+  }
+
+  public void setFailedPolicies(@Nullable List<PolicyResult> failedPolicies) {
+    this.failedPolicies = failedPolicies;
+  }
+
+  @Nullable
+  public List<PolicyResult> getSkippedPolicies() {
+    return skippedPolicies;
+  }
+
+  public void setSkippedPolicies(@Nullable List<PolicyResult> skippedPolicies) {
+    this.skippedPolicies = skippedPolicies;
+  }
+
+  @Nullable
+  public List<PolicyResult> getPassedPolicies() {
+    return passedPolicies;
+  }
+
+  public void setPassedPolicies(@Nullable List<PolicyResult> passedPolicies) {
+    this.passedPolicies = passedPolicies;
   }
 }
