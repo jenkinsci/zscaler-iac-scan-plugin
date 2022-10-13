@@ -924,12 +924,28 @@
       "terraform"
     ],
     "total_policies": 11,
-    "passed_policies": 6,
+    "passed_findings": 6,
+    "passed_policies": {
+      "total": 11,
+      "severity_counts": {
+        "HIGH": 63
+      }
+    },
     "failed_policies": {
       "total": 11,
       "severity_counts": {
         "HIGH": 63
       }
+    },
+    "failed_findings": {
+      "total": 11,
+      "severity_counts": {
+        "HIGH": 63
+      }
+    },
+    "skipped_findings": {
+      "total": 0,
+      "severity_counts": {}
     },
     "skipped_policies": {
       "total": 0,
