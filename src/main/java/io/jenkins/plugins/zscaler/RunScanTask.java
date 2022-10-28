@@ -159,7 +159,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       ZscannerSetup.cleanup(binaryLoc);
     }
 
-    if (StringUtils.isBlank(resp)) {
+    if (StringUtils.isEmpty(resp)) {
       // if result is null then err in above try block will be populated
       listener.getLogger().println("Failed to run scan, the results are empty");
       throw new AbortException("Zscaler IaC scan failed");
