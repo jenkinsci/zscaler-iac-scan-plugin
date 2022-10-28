@@ -31,6 +31,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
   String filePath;
   String dirPath;
   private static final Logger LOGGER = Logger.getLogger(RunScanTask.class.getName());
+  private static final String NO_IAC_RESOURCES_FOUND_MSG = "No IaC resources found";
   public RunScanTask(
       TaskListener listener,
       FilePath workspace,
@@ -159,7 +160,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       ZscannerSetup.cleanup(binaryLoc);
     }
 
-    if (StringUtils.isEmpty(resp)) {
+    if (StringUtils.isEmpty(resp) && StringUtils.equals(resp, NO_IAC_RESOURCES_FOUND_MSG)) {
       // if result is null then err in above try block will be populated
       listener.getLogger().println("Failed to run scan, the results are empty");
       throw new AbortException("Zscaler IaC scan failed");
