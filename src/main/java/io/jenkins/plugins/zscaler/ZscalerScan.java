@@ -192,13 +192,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
         }
         JSONArray violations = jsonObject.optJSONArray("failed_policies");
         if (violations != null && violations.length() > 0) {
-          for (int i = 0; i < violations.length(); i++) {
-            JSONObject violation = violations.optJSONObject(i);
-            String severity = violation.optString("severity");
-            if (severity != null && ("HIGH".equals(severity.toUpperCase(Locale.ROOT)) || "CRITICAL".equals(severity.toUpperCase(Locale.ROOT)))) {
-              throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
-            }
-          }
+          throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
         }
       } catch (Exception e) {
         throw new AbortException("Zscaler IaC scan failed");
