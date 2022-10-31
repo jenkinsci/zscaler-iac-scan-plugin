@@ -12,6 +12,7 @@ import io.jenkins.plugins.zscaler.models.BuildDetails;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
@@ -182,18 +183,25 @@ public class ZscalerScan extends SimpleBuildWrapper {
   @VisibleForTesting
   void validateAndFailBuild(String results, TaskListener listener) throws IOException {
     listener.getLogger().println(results);
-  LOGGER.log(Level.INFO, "Results::" + results);
+    LOGGER.log(Level.INFO, "Results::" + results);
     if (isFailBuild()) {
-      JSONObject jsonObject = new JSONObject(results);
-      JSONArray violations = jsonObject.optJSONArray("failed_policies");
-      if (violations != null && violations.length() > 0) {
-        for (int i = 0; i < violations.length(); i++) {
-          JSONObject violation = violations.optJSONObject(i);
-          String severity = violation.optString("severity");
-          if (severity != null && ("HIGH".equals(severity.toUpperCase(Locale.ROOT)) || "CRITICAL".equals(severity.toUpperCase(Locale.ROOT)))) {
-            throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
+      try {
+        JSONObject jsonObject = new JSONObject(results);
+        if(jsonObject.keySet().contains("no_resources_message")) {
+          return;
+        }
+        JSONArray violations = jsonObject.optJSONArray("failed_policies");
+        if (violations != null && violations.length() > 0) {
+          for (int i = 0; i < violations.length(); i++) {
+            JSONObject violation = violations.optJSONObject(i);
+            String severity = violation.optString("severity");
+            if (severity != null && ("HIGH".equals(severity.toUpperCase(Locale.ROOT)) || "CRITICAL".equals(severity.toUpperCase(Locale.ROOT)))) {
+              throw new AbortException("Zscaler IaC scan found violations, they need to be fixed");
+            }
           }
         }
+      } catch (Exception e) {
+        throw new AbortException("Zscaler IaC scan failed");
       }
     } else {
       listener.getLogger().println("Zscaler IaC scan found violations");

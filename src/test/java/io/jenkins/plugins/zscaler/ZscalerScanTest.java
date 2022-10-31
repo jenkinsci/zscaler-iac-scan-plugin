@@ -62,6 +62,31 @@ public class ZscalerScanTest {
     underTest.validateAndFailBuild(results, taskListenerMock);
   }
 
+  @Test
+  public void validateAndFailBuildForNoIaCResourceResult() throws IOException {
+    underTest.setFailBuild(true);
+    underTest.setLogLevel("debug");
+    TaskListener taskListenerMock = Mockito.mock(TaskListener.class);
+    PrintStream mocklogStream = Mockito.mock(PrintStream.class);
+    when(taskListenerMock.getLogger()).thenReturn(mocklogStream);
+    doNothing().when(mocklogStream).println(anyString());
+    Run buildMock = Mockito.mock(Run.class, Mockito.RETURNS_DEEP_STUBS);
+    when(buildMock.getParent().getDisplayName()).thenReturn("sample");
+    when(buildMock.getNumber()).thenReturn(1);
+    when(buildMock.getTimestampString()).thenReturn(String.valueOf(System.currentTimeMillis()));
+
+    URL jobFolder = Resources.getResource("sample");
+    Job mockJob = Mockito.mock(Job.class);
+
+    when(buildMock.getParent()).thenReturn(mockJob);
+    File resourceFolder = Paths.get(jobFolder.getPath().replaceFirst("^/(.:/)", "$1")).toFile();
+    when(mockJob.getRootDir()).thenReturn(resourceFolder);
+
+    String results = "{\"no_resources_message\" : \"No IaC resources found\"}";
+
+    underTest.validateAndFailBuild(results, taskListenerMock);
+  }
+
   @Test(expected = AbortException.class)
   public void validateAndPostResultsToCWP_withfail() throws IOException {
     underTest.setFailBuild(true);
