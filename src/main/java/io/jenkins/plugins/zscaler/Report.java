@@ -25,6 +25,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -86,12 +89,13 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
     try {
       if (result.getScanSummary() != null && result.getScanSummary().getScannedAt() != null) {
         String scannedAt = result.getScanSummary().getScannedAt();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSSSSXXX");
-        Date scannedDate = sdf.parse(scannedAt);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-        metadata.setDate(dateFormatter.format(scannedDate));
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm a");
-        metadata.setTime(timeFormatter.format(scannedDate));
+        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(scannedAt);
+        Instant instant = Instant.from(temporalAccessor);
+        Date date = Date.from(instant);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        metadata.setDate(dateFormat.format(date));
+        metadata.setTime(timeFormat.format(date));
       }
       metadata.setBuildNumber(String.valueOf(run.getNumber()));
       metadata.setBuildStatus(String.valueOf(run.getResult()));
