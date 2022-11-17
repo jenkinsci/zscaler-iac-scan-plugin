@@ -92,7 +92,7 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
         TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(scannedAt);
         Instant instant = Instant.from(temporalAccessor);
         Date date = Date.from(instant);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
         metadata.setDate(dateFormat.format(date));
         metadata.setTime(timeFormat.format(date));
