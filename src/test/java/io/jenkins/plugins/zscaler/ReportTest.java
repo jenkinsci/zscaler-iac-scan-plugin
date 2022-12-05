@@ -2,6 +2,7 @@ package io.jenkins.plugins.zscaler;
 
 import com.google.common.io.Resources;
 import hudson.model.Run;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,5 +57,16 @@ public class ReportTest {
     Mockito.when(run.getNumber()).thenReturn(1);
     String results = underTest.getResults();
     Assert.assertNotNull(results);
+  }
+
+  @Test
+  public void testGetErrorResult() {
+    URL buildNumberFolder = Resources.getResource("negative_sample");
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$2"));
+    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
+    Mockito.when(run.getNumber()).thenReturn(2);
+    String results = underTest.getResults();
+    Assert.assertNotNull(results);
+    Assert.assertTrue(StringUtils.contains(results, "\"errorMessage\":\"Scan failed to complete\""));
   }
 }
