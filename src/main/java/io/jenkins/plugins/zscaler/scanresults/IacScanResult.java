@@ -42,6 +42,10 @@ public class IacScanResult {
   @JsonProperty("metadata")
   private ScanMetadata metadata;
 
+  @JsonProperty("errorMessage")
+  @Nullable
+  private String scanErrorMessage;
+
   public List<PolicyResult> getPassed() {
     return passed;
   }
@@ -107,5 +111,14 @@ public class IacScanResult {
 
   public void setPassedPolicies(@Nullable List<PolicyResult> passedPolicies) {
     this.passedPolicies = passedPolicies;
+  }
+
+  @Nullable
+  public String getScanErrorMessage() {
+    return scanErrorMessage;
+  }
+
+  public void setScanErrorMessage(@Nullable String scanErrorMessage) {
+    this.scanErrorMessage = scanErrorMessage;
   }
 }

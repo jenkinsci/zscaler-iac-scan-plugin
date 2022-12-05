@@ -88,9 +88,11 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       commandList.addAll(commandPrefix);
 
       if(StringUtils.isNotEmpty(filePath)) {
+        listener.getLogger().println("Scan file path is set to: " + filePath);
         commandList.add("-f");
         commandList.add(filePath);
       } else if (StringUtils.isNotEmpty(dirPath)){
+        listener.getLogger().println("Scan directory path is set to: " + dirPath);
         commandList.add("-d");
         commandList.add(dirPath);
       } else {
