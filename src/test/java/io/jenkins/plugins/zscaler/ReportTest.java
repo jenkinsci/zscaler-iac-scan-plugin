@@ -55,6 +55,6 @@ public class ReportTest {
     Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
     Mockito.when(run.getNumber()).thenReturn(1);
     String results = underTest.getResults();
-    System.out.println(results);
+    Assert.assertNotNull(results);
   }
 }
