@@ -46,6 +46,10 @@ public class IacScanResult {
   @Nullable
   private String scanErrorMessage;
 
+  @JsonProperty("noResourcesMessage")
+  @Nullable
+  private String noResourcesMessage;
+
   public List<PolicyResult> getPassed() {
     return passed;
   }
@@ -120,5 +124,14 @@ public class IacScanResult {
 
   public void setScanErrorMessage(@Nullable String scanErrorMessage) {
     this.scanErrorMessage = scanErrorMessage;
+  }
+
+  @Nullable
+  public String getNoResourcesMessage() {
+    return noResourcesMessage;
+  }
+
+  public void setNoResourcesMessage(@Nullable String noResourcesMessage) {
+    this.noResourcesMessage = noResourcesMessage;
   }
 }

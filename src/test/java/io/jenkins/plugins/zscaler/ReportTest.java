@@ -60,6 +60,17 @@ public class ReportTest {
   }
 
   @Test
+  public void getNoIaCResultNegative() {
+    URL buildNumberFolder = Resources.getResource("negative_sample");
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$1"));
+    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
+    Mockito.when(run.getNumber()).thenReturn(1);
+    String results = underTest.getResults();
+    Assert.assertNotNull(results);
+    Assert.assertTrue(StringUtils.contains(results, "\"noResourcesMessage\":\"No IaC resources were detected during the scan\""));
+  }
+
+  @Test
   public void testGetErrorResult() {
     URL buildNumberFolder = Resources.getResource("negative_sample");
     Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$2"));

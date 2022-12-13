@@ -1,9 +1,9 @@
 package io.jenkins.plugins.zscaler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.Item;
-import hudson.EnvVars;
 import hudson.model.Job;
 import hudson.model.ManagementLink;
 import hudson.model.Run;
@@ -31,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 @Extension
@@ -39,6 +40,8 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
 
   private static final Logger LOG = LoggerFactory.getLogger(Report.class.getName());
   private static final String REPORT_ERROR_MESSAGE = "Scan failed to complete";
+
+  private static final String NO_IAC_RESOURCE_FOUND_MESSAGE = "No IaC resources were detected during the scan";
   public transient Run<?, ?> run;
 
   public Report(Run<?, ?> run) {
@@ -191,6 +194,9 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
       ObjectMapper mapper = new ObjectMapper();
       IacScanResult scanResult = mapper.readValue(resultFile, IacScanResult.class);
       if (scanResult != null) {
+        if(isNoResourcesResult(mapper, resultFilePath)) {
+          scanResult.setNoResourcesMessage(NO_IAC_RESOURCE_FOUND_MESSAGE);
+        }
         return scanResult;
       } else {
         LOG.error("Failed to read results from {}", resultFile.getAbsolutePath());
@@ -200,6 +206,19 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
       LOG.error("Failed to read the file {} due to {}", resultFilePath, e.getMessage());
     }
     return getErrorScanResult();
+  }
+
+  private boolean isNoResourcesResult(ObjectMapper mapper, Path resultFilePath) {
+    try {
+      HashMap<String, Object> resultMap = mapper.readValue(resultFilePath.toFile(), HashMap.class);
+      if(resultMap.containsKey("no_resources_message")) {
+        return true;
+      }
+    } catch(Exception e) {
+      LOG.error("Error occurred while determining no IaC resource message in result file", e);
+      return false;
+    }
+    return false;
   }
 
   private String getConfigXml(Run build) {
