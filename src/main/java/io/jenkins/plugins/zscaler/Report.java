@@ -11,6 +11,7 @@ import hudson.util.LogTaskListener;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
 import io.jenkins.plugins.zscaler.models.ScanMetadata;
 import io.jenkins.plugins.zscaler.scanresults.IacScanResult;
+import io.jenkins.plugins.zscaler.scanresults.ScanSummary;
 import jenkins.model.RunAction2;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.StaplerProxy;
@@ -25,6 +26,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -34,6 +38,7 @@ import java.util.logging.Level;
 public class Report extends ManagementLink implements RunAction2, StaplerProxy {
 
   private static final Logger LOG = LoggerFactory.getLogger(Report.class.getName());
+  private static final String REPORT_ERROR_MESSAGE = "Scan failed to complete";
   public transient Run<?, ?> run;
 
   public Report(Run<?, ?> run) {
@@ -86,12 +91,13 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
     try {
       if (result.getScanSummary() != null && result.getScanSummary().getScannedAt() != null) {
         String scannedAt = result.getScanSummary().getScannedAt();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSSSSXXX");
-        Date scannedDate = sdf.parse(scannedAt);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-        metadata.setDate(dateFormatter.format(scannedDate));
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm a");
-        metadata.setTime(timeFormatter.format(scannedDate));
+        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(scannedAt);
+        Instant instant = Instant.from(temporalAccessor);
+        Date date = Date.from(instant);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        metadata.setDate(dateFormat.format(date));
+        metadata.setTime(timeFormat.format(date));
       }
       metadata.setBuildNumber(String.valueOf(run.getNumber()));
       metadata.setBuildStatus(String.valueOf(run.getResult()));
@@ -135,6 +141,40 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
     return null;
   }
 
+  /**
+   * Returns a dummy <code>IacScanResult</code> which is returned in case of any scan errors
+   * @return
+   */
+  public IacScanResult getErrorScanResult() {
+    IacScanResult errorScanResult = new IacScanResult();
+    errorScanResult.setFailed(null);
+    errorScanResult.setSkipped(null);
+    errorScanResult.setPassed(null);
+    errorScanResult.setMetadata(getErrorScanMetadata());
+    errorScanResult.setScanSummary(new ScanSummary());
+    errorScanResult.setScanErrorMessage(REPORT_ERROR_MESSAGE);
+    return errorScanResult;
+  }
+
+  private ScanMetadata getErrorScanMetadata() {
+    ScanMetadata metadata = new ScanMetadata();
+    try {
+      metadata.setBuildNumber(String.valueOf(run.getNumber()));
+      metadata.setBuildStatus(String.valueOf(run.getResult()));
+      metadata.setProject(run.getParent().getName());
+      BuildDetails details = new BuildDetails();
+      final EnvVars env = run.getEnvironment(new LogTaskListener(java.util.logging.Logger.getLogger(
+              this.getClass().getName()), Level.INFO));
+      SCMDetails.populateSCMDetails(env, details);
+      if (details.getRepoLoc() != null) {
+        metadata.setRepo(details.getRepoLoc());
+      }
+    } catch (Exception e) {
+      LOG.error("Error occurred while fetching run time environment", e);
+    }
+    return metadata;
+  }
+
   public String getReportUrl(){
     return Configuration.get().getReportUrl();
   }
@@ -154,13 +194,12 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
         return scanResult;
       } else {
         LOG.error("Failed to read results from {}", resultFile.getAbsolutePath());
-        return null;
       }
 
     } catch (Exception e) {
       LOG.error("Failed to read the file {} due to {}", resultFilePath, e.getMessage());
     }
-    return null;
+    return getErrorScanResult();
   }
 
   private String getConfigXml(Run build) {

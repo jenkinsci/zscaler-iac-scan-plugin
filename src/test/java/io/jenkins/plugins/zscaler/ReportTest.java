@@ -2,6 +2,7 @@ package io.jenkins.plugins.zscaler;
 
 import com.google.common.io.Resources;
 import hudson.model.Run;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,15 +23,15 @@ public class ReportTest {
   @BeforeClass
   public static void init() {
     run = Mockito.mock(Run.class, Mockito.RETURNS_DEEP_STUBS);
-    URL buildNumberFolder = Resources.getResource("sample");
-    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$1"));
-    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
-    Mockito.when(run.getNumber()).thenReturn(1);
     underTest = new Report(run);
   }
 
   @Test
   public void getBuildDone() {
+    URL buildNumberFolder = Resources.getResource("sample");
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$1"));
+    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
+    Mockito.when(run.getNumber()).thenReturn(1);
     Mockito.when(run.isBuilding()).thenReturn(false);
     Assert.assertEquals("true", underTest.getBuildDone());
 
@@ -40,7 +41,32 @@ public class ReportTest {
 
   @Test
   public void getResult() {
+    URL buildNumberFolder = Resources.getResource("sample");
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$1"));
+    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
+    Mockito.when(run.getNumber()).thenReturn(1);
     String results = underTest.getResults();
     Assert.assertNotNull(results);
+  }
+
+  @Test
+  public void getResultNegative() {
+    URL buildNumberFolder = Resources.getResource("negative_sample");
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$1"));
+    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
+    Mockito.when(run.getNumber()).thenReturn(1);
+    String results = underTest.getResults();
+    Assert.assertNotNull(results);
+  }
+
+  @Test
+  public void testGetErrorResult() {
+    URL buildNumberFolder = Resources.getResource("negative_sample");
+    Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$2"));
+    Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
+    Mockito.when(run.getNumber()).thenReturn(2);
+    String results = underTest.getResults();
+    Assert.assertNotNull(results);
+    Assert.assertTrue(StringUtils.contains(results, "\"errorMessage\":\"Scan failed to complete\""));
   }
 }

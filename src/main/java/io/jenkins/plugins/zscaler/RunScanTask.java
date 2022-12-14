@@ -88,9 +88,11 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       commandList.addAll(commandPrefix);
 
       if(StringUtils.isNotEmpty(filePath)) {
+        listener.getLogger().println("Scan file path is set to: " + filePath);
         commandList.add("-f");
         commandList.add(filePath);
       } else if (StringUtils.isNotEmpty(dirPath)){
+        listener.getLogger().println("Scan directory path is set to: " + dirPath);
         commandList.add("-d");
         commandList.add(dirPath);
       } else {
@@ -159,7 +161,7 @@ public class RunScanTask extends MasterToSlaveCallable<Object, RuntimeException>
       ZscannerSetup.cleanup(binaryLoc);
     }
 
-    if (StringUtils.isBlank(resp)) {
+    if (StringUtils.isEmpty(resp)) {
       // if result is null then err in above try block will be populated
       listener.getLogger().println("Failed to run scan, the results are empty");
       throw new AbortException("Zscaler IaC scan failed");

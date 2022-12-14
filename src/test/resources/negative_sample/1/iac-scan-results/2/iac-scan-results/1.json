@@ -1,0 +1,27 @@
+{
+  "passed_findings": [],
+  "failed_findings": [],
+  "skipped_findings": [],
+  "summary": {
+    "status": "Hello",
+    "scan_path": null,
+    "status_description": null,
+    "scanned_at": null,
+    "template_type": null,
+    "total_policies": 0,
+    "passed_findings": 0,
+    "failed_findings": null,
+    "skipped_findings": null,
+    "failed_policies": null,
+    "skipped_policies": null,
+    "passed_policies": null
+  },
+  "metadata": {
+    "date": null,
+    "time": null,
+    "repo": "https://github.com/sbaitmangalkar/security_group_tf_template",
+    "buildNumber": "4",
+    "buildStatus": "FAILURE",
+    "project": "iac_test_0"
+  }
+}
