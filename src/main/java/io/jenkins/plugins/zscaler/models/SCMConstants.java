@@ -14,6 +14,8 @@ public class SCMConstants {
 
     public static final String GitCommit = "GIT_COMMIT";
 
+    public static final String BranchName = "BRANCH_NAME";
+
     public static final String SvnUrl = "SVN_URL";
 
     public static final String SvnRevision = "SVN_REVISION";

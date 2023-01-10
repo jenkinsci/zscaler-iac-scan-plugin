@@ -122,6 +122,9 @@ public class ZscalerScan extends SimpleBuildWrapper {
         SCMDetails.populateSCMDetails(env, buildDetails);
 
         JSONObject configJson = XML.toJSONObject(configXml);
+        if (buildDetails.getCommitSha() == null ){
+          SCMDetails.populateSCMDetails(env, buildDetails, configJson);
+        }
         JSONObject project = configJson.optJSONObject("project");
         if (project != null) {
           JSONObject buildWrappers = project.optJSONObject("buildWrappers");
