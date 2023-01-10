@@ -23,4 +23,6 @@ public class SCMConstants {
     public static final String RepoName = "name";
 
     public static final String RepoUrl = "url";
+
+    public static final String BranchName = "BRANCH_NAME";
 }
