@@ -134,7 +134,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
           List<JobProperty> properties = build.getParent().getAllProperties();
           for (JobProperty property : properties) {
               BranchJobProperty bjp = (BranchJobProperty) property;
-              if (bjp.getBranch().getName() == env.get(SCMConstants.BranchName)) {
+              if (bjp.getBranch().getName().equals(env.get(SCMConstants.BranchName))) {
                 Branch branch = bjp.getBranch();
                 buildDetails.setCommitSha(branch.getSourceId());
               }

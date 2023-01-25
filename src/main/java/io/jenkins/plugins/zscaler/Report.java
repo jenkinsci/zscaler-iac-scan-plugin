@@ -62,7 +62,7 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
 
   @Override
   public String getIconFileName() {
-    return this.run != null ? (this.run.hasPermission(Item.CONFIGURE) ? "/plugin/zscaler-iac-scan/images/icon.png" : null) : null;
+    return this.run != null ? (this.run.hasPermission(Item.READ) ? "/plugin/zscaler-iac-scan/images/icon.png" : null) : null;
   }
 
   @Override
@@ -243,7 +243,7 @@ public class Report extends ManagementLink implements RunAction2, StaplerProxy {
 
   @Override
   public Object getTarget() {
-    this.run.hasPermission(Item.CONFIGURE);
+    this.run.hasPermission(Item.READ);
     return this;
   }
 }
