@@ -123,6 +123,7 @@ public class ZscalerScan extends SimpleBuildWrapper {
     buildDetails.setBuildTriggeredBy(env.get("USER"));
     buildDetails.addEventDetails("build_url", env.get("BUILD_URL"));
     buildDetails.addEventDetails("action", build.getDisplayName());
+    buildDetails.addEventDetails("job_name", build.getParent().getName());
 
     try {
       String configXml = getConfigXml(build);
