@@ -1,14 +1,18 @@
 package io.jenkins.plugins.zscaler;
 
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.*;
 import hudson.model.*;
 import hudson.remoting.VirtualChannel;
+import hudson.scm.SCM;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.LogTaskListener;
 import io.jenkins.plugins.zscaler.models.BuildDetails;
+import io.jenkins.plugins.zscaler.models.SCMConstants;
+import jenkins.branch.Branch;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.apache.commons.io.IOUtils;
@@ -22,15 +26,18 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jenkinsci.plugins.workflow.multibranch.BranchJobProperty;
 
 public class ZscalerScan extends SimpleBuildWrapper {
 
@@ -107,7 +114,8 @@ public class ZscalerScan extends SimpleBuildWrapper {
     }
   }
 
-  private BuildDetails getBuildDetails(Run build, TaskListener listener) throws IOException, InterruptedException {
+  @VisibleForTesting
+  BuildDetails getBuildDetails(Run build, TaskListener listener) throws IOException, InterruptedException {
     final EnvVars env = build.getEnvironment(new LogTaskListener(Logger.getLogger(
             this.getClass().getName()), Level.INFO));
     BuildDetails buildDetails = new BuildDetails();
@@ -122,6 +130,17 @@ public class ZscalerScan extends SimpleBuildWrapper {
         SCMDetails.populateSCMDetails(env, buildDetails);
 
         JSONObject configJson = XML.toJSONObject(configXml);
+        if (buildDetails.getCommitSha() == null ){
+          List<JobProperty> properties = build.getParent().getAllProperties();
+          for (JobProperty property : properties) {
+              BranchJobProperty bjp = (BranchJobProperty) property;
+              if (bjp.getBranch().getName().equals(env.get(SCMConstants.BranchName))) {
+                Branch branch = bjp.getBranch();
+                buildDetails.setCommitSha(branch.getSourceId());
+              }
+          }
+          SCMDetails.populateSCMDetails(env, buildDetails, configJson);
+        }
         JSONObject project = configJson.optJSONObject("project");
         if (project != null) {
           JSONObject buildWrappers = project.optJSONObject("buildWrappers");
