@@ -136,7 +136,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-multibranch</artifactId>
-            <version>707.v71c3f0a_6ccdb_</version>
+            <version>733.v109046189126</version>
         </dependency>
 
     </dependencies>
