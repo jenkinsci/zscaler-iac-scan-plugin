@@ -107,7 +107,7 @@ public class ZscalerScanTest {
         Assert.assertEquals("test", details.getBuildTriggeredBy());
         Assert.assertEquals("main", details.getBranchName());
         Assert.assertEquals("https://github.com/devworks751/zpc-test", details.getRepoLoc());
-        Assert.assertEquals(2, details.getEventDetails().size());
+        Assert.assertEquals(3, details.getEventDetails().size());
         Assert.assertEquals(3, details.getRepoDetails().size());
 
 
