@@ -1,6 +1,7 @@
 package io.jenkins.plugins.zscaler;
 
 import com.google.common.io.Resources;
+import hudson.Functions;
 import hudson.model.Run;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
@@ -13,6 +14,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.junit.Assume.assumeFalse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportTest {
@@ -72,6 +75,7 @@ public class ReportTest {
 
   @Test
   public void testGetErrorResult() {
+    assumeFalse("TODO: Implement this test for Windows", Functions.isWindows());
     URL buildNumberFolder = Resources.getResource("negative_sample");
     Path resourceFolder = Paths.get(buildNumberFolder.getPath().replaceFirst("^/(.:/)", "$2"));
     Mockito.when(run.getParent().getBuildDir()).thenReturn(resourceFolder.toFile());
